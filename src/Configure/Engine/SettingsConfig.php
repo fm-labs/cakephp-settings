@@ -285,9 +285,9 @@ class SettingsConfig extends PhpConfig
         list($plugin, $key) = pluginSplit($key, true);
 
         if ($plugin) {
-            $file = $settingsPath . DS . 'plugin.' . $plugin . $key;
+            $file = $settingsPath . 'plugin.' . $plugin . $key;
         } else {
-            $file = $settingsPath . DS . $key;
+            $file = $settingsPath . $key;
         }
 
         $file .= $ext;
