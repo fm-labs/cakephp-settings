@@ -52,10 +52,10 @@ class SettingsTable extends Table
         $validator
             ->requirePresence('name', 'create')
             ->notEmpty('name');
-            
+
         $validator
-            ->add('type', 'valid', ['rule' => 'numeric'])
-            ->allowEmpty('type');
+            ->requirePresence('type', 'create')
+            ->notEmpty('type');
             
         $validator
             ->add('value_int', 'valid', ['rule' => 'numeric'])
@@ -91,13 +91,13 @@ class SettingsTable extends Table
 
     public function afterSave(Event $event, Entity $entity, \ArrayObject $options)
     {
-        SettingsConfig::resetSettingsFilePath(SETTINGS, $entity->ref);
+        //SettingsConfig::resetSettingsFilePath(SETTINGS, $entity->ref);
         return true;
     }
 
     public function afterDelete(Event $event, Entity $entity, \ArrayObject $options)
     {
-        SettingsConfig::resetSettingsFilePath(SETTINGS, $entity->ref);
+        //SettingsConfig::resetSettingsFilePath(SETTINGS, $entity->ref);
         return true;
     }
 
