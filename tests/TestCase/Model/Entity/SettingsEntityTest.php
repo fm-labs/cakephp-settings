@@ -8,16 +8,16 @@ use Settings\Model\Table\SettingsTable;
 
 class SettingsEntityTest extends TestCase
 {
-    public $fixtures = [
-        'plugin.settings.settings'
-    ];
-
-    public $autoFixtures = true;
 
     /**
      * @var SettingsTable
      */
     public $Settings;
+
+
+    public $fixtures = [
+        'plugin.settings.settings'
+    ];
 
     /**
      * setUp method
@@ -26,28 +26,30 @@ class SettingsEntityTest extends TestCase
      */
     public function setUp()
     {
-        $this->Settings = TableRegistry::get('Settings.Settings');
+        parent::setUp();
+        $config = TableRegistry::exists('Settings') ? [] : ['className' => 'Settings\Model\Table\SettingsTable'];
+        $this->Settings = TableRegistry::get('Settings', $config);
     }
 
     public function testTypeGetterSetter()
     {
         // test 1
         $entity = $this->Settings->newEntity();
-        $entity->type = Setting::TYPE_BOOLEAN;
-        $this->assertEquals(Setting::TYPE_BOOLEAN, $entity->type);
+        $entity->value_type = Setting::TYPE_BOOLEAN;
+        $this->assertEquals(Setting::TYPE_BOOLEAN, $entity->value_type);
 
         // test 2
         $entity = $this->Settings->newEntity();
-        $entity->type = 'string';
-        $this->assertEquals(Setting::TYPE_STRING, $entity->type);
+        $entity->value_type = 'string';
+        $this->assertEquals(Setting::TYPE_STRING, $entity->value_type);
 
         // test 3
-        $entity = $this->Settings->newEntity(['type' => Setting::TYPE_STRING]);
-        $this->assertEquals(Setting::TYPE_STRING, $entity->type);
+        $entity = $this->Settings->newEntity(['value_type' => Setting::TYPE_STRING]);
+        $this->assertEquals(Setting::TYPE_STRING, $entity->value_type);
 
         // test 4
-        //$entity = $this->Settings->newEntity(['type' => 'string']);
-        //$this->assertEquals(Setting::TYPE_STRING, $entity->type);
+        //$entity = $this->Settings->newEntity(['value_type' => 'string']);
+        //$this->assertEquals(Setting::TYPE_STRING, $entity->value_type);
     }
 
     public function testStringValueGetterSetter()
@@ -56,7 +58,7 @@ class SettingsEntityTest extends TestCase
         $value = 'Test';
         $entity = $this->Settings->newEntity([
             'name' => 'test_string',
-            'type' => Setting::TYPE_STRING,
+            'value_type' => Setting::TYPE_STRING,
             'value_string' => $value
         ]);
 
@@ -64,7 +66,7 @@ class SettingsEntityTest extends TestCase
         $this->assertInternalType('string', $entity->value);
 
         // Setter
-        $entity = $this->Settings->newEntity(['type' => Setting::TYPE_STRING]);
+        $entity = $this->Settings->newEntity(['value_type' => Setting::TYPE_STRING]);
         $value = 'Hello';
 
         $entity->value = $value;
@@ -79,7 +81,7 @@ class SettingsEntityTest extends TestCase
         $value = true;
         $entity = $this->Settings->newEntity([
             'name' => 'test_boolean',
-            'type' => Setting::TYPE_BOOLEAN,
+            'value_type' => Setting::TYPE_BOOLEAN,
             'value_boolean' => $value
         ]);
         $this->assertTrue($entity->value === $value);
@@ -88,7 +90,7 @@ class SettingsEntityTest extends TestCase
         $value = false;
         $entity = $this->Settings->newEntity([
             'name' => 'test_boolean',
-            'type' => Setting::TYPE_BOOLEAN,
+            'value_type' => Setting::TYPE_BOOLEAN,
             'value_boolean' => $value
         ]);
         $this->assertTrue($entity->value === $value);
@@ -96,7 +98,7 @@ class SettingsEntityTest extends TestCase
 
 
         // Setter
-        $entity = $this->Settings->newEntity(['type' => Setting::TYPE_BOOLEAN]);
+        $entity = $this->Settings->newEntity(['value_type' => Setting::TYPE_BOOLEAN]);
         $value = true;
 
         $entity->value = $value;
@@ -111,7 +113,7 @@ class SettingsEntityTest extends TestCase
         $value = 'Some Text';
         $entity = $this->Settings->newEntity([
             'name' => 'test_text',
-            'type' => Setting::TYPE_TEXT,
+            'value_type' => Setting::TYPE_TEXT,
             'value_text' => $value
         ]);
 
@@ -120,7 +122,7 @@ class SettingsEntityTest extends TestCase
 
 
         // Setter
-        $entity = $this->Settings->newEntity(['type' => Setting::TYPE_TEXT]);
+        $entity = $this->Settings->newEntity(['value_type' => Setting::TYPE_TEXT]);
         $value = 'Some Text';
 
         $entity->value = $value;
@@ -135,7 +137,7 @@ class SettingsEntityTest extends TestCase
         $value = 13;
         $entity = $this->Settings->newEntity([
             'name' => 'test_integer',
-            'type' => Setting::TYPE_INT,
+            'value_type' => Setting::TYPE_INT,
             'value_int' => $value
         ]);
 
@@ -143,7 +145,7 @@ class SettingsEntityTest extends TestCase
         $this->assertInternalType('int', $entity->value);
 
         // Setter
-        $entity = $this->Settings->newEntity(['type' => Setting::TYPE_INT]);
+        $entity = $this->Settings->newEntity(['value_type' => Setting::TYPE_INT]);
         $value = 13;
 
         $entity->value = $value;
@@ -158,7 +160,7 @@ class SettingsEntityTest extends TestCase
         $value = 13.3333;
         $entity = $this->Settings->newEntity([
             'name' => 'test_double',
-            'type' => Setting::TYPE_DOUBLE,
+            'value_type' => Setting::TYPE_DOUBLE,
             'value_double' => $value
         ]);
 
@@ -173,7 +175,7 @@ class SettingsEntityTest extends TestCase
         $value = 13.33339;
         $entity = $this->Settings->newEntity([
             'name' => 'test_double_precision',
-            'type' => Setting::TYPE_DOUBLE,
+            'value_type' => Setting::TYPE_DOUBLE,
             'value_double' => $value
         ]);
 

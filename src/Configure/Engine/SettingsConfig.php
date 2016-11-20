@@ -14,13 +14,16 @@ use Cake\Log\Log;
  */
 class SettingsConfig extends PhpConfig
 {
-    public static $prefix = 'settings_';
-
     /**
      * @var string Path to settings dir
      */
     protected $_path;
 
+    /**
+     * File extension.
+     *
+     * @var string
+     */
     protected $_extension = '.php';
 
     /**
@@ -28,11 +31,6 @@ class SettingsConfig extends PhpConfig
      */
     public function __construct($configPath = null)
     {
-
-        if ($configPath === null && defined('SETTINGS')) {
-            $configPath = SETTINGS;
-        } 
-        
         parent::__construct($configPath);
     }
 
@@ -105,7 +103,7 @@ class SettingsConfig extends PhpConfig
      */
     protected function _buildSettingsSchemaFilePath($key)
     {
-        return self::buildSettingsFilePath($this->_path, $key, '.schema.json');
+        return self::buildSettingsFilePath($this->_path, $key, 'schema.json');
     }
 
     /**
@@ -132,8 +130,7 @@ class SettingsConfig extends PhpConfig
             throw new Exception('Cannot load/dump settings schema with ../ in them.');
         }
 
-        list(,$scope) = pluginSplit($key);
-        return $settingsPath . static::$prefix . $scope . $ext;
+        return $settingsPath . 'settings.' . $key . $ext;
     }
 
     public static function buildSettingsSchemaPath($settingsPath, $ext = '.php')
@@ -142,7 +139,7 @@ class SettingsConfig extends PhpConfig
             throw new Exception('Cannot load/dump settings schema with ../ in them.');
         }
 
-        return $settingsPath . 'schema' . $ext;
+        return $settingsPath . 'settings' . $ext;
     }
 
     /**
@@ -159,7 +156,11 @@ class SettingsConfig extends PhpConfig
             throw new \Exception("Cannot read settings schema from " . $settingsFile);
         }
 
-        $schema = include $settingsFile;
+
+        $loader = function() use ($settingsFile) {
+            return include $settingsFile;
+        };
+        $schema = $loader();
 
         if (!is_array($schema) || !isset($schema['Settings'])) {
             throw new Exception(sprintf('Settings file "%s" has no Settings defined', $settingsFile));

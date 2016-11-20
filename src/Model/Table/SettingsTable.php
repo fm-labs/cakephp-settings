@@ -25,6 +25,8 @@ class SettingsTable extends Table
      */
     public function initialize(array $config)
     {
+        parent::initialize($config);
+
         $this->table('settings_settings');
         $this->displayField('name');
         $this->primaryKey('id');
@@ -54,8 +56,8 @@ class SettingsTable extends Table
             ->notEmpty('name');
 
         $validator
-            ->requirePresence('type', 'create')
-            ->notEmpty('type');
+            ->requirePresence('value_type', 'create')
+            ->notEmpty('value_type');
             
         $validator
             ->add('value_int', 'valid', ['rule' => 'numeric'])
@@ -92,13 +94,13 @@ class SettingsTable extends Table
     public function afterSave(Event $event, Entity $entity, \ArrayObject $options)
     {
         //SettingsConfig::resetSettingsFilePath(SETTINGS, $entity->ref);
-        return true;
+        //return true;
     }
 
     public function afterDelete(Event $event, Entity $entity, \ArrayObject $options)
     {
         //SettingsConfig::resetSettingsFilePath(SETTINGS, $entity->ref);
-        return true;
+        //return true;
     }
 
     public function listByKeys()

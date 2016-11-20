@@ -12,6 +12,13 @@ class SettingsTableTest extends TestCase
 {
 
     /**
+     * Test subject
+     *
+     * @var \Settings\Model\Table\SettingsTable
+     */
+    public $Settings;
+
+    /**
      * Fixtures
      *
      * @var array
