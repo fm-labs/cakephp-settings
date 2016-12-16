@@ -19,6 +19,7 @@ class Setting extends Entity
     const TYPE_JSON = 'json';
     const TYPE_XML = 'xml';
     const TYPE_SERIALIZED = 'serialized';
+    const TYPE_OTHER = 'other' ; // @deprecated
 
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
@@ -29,7 +30,7 @@ class Setting extends Entity
         'ref' => true,
         'scope' => true,
         'name' => true,
-        'type' => true,
+        'value_type' => true,
         'value' => true,
         'value_int' => true,
         'value_double' => true,
@@ -51,7 +52,7 @@ class Setting extends Entity
      */
     protected function _setValue($value)
     {
-        switch ($this->type)
+        switch ($this->value_type)
         {
             case static::TYPE_BOOLEAN:
                 $this->_properties['value_boolean'] = (bool) $value;
@@ -71,7 +72,7 @@ class Setting extends Entity
             case static::TYPE_OTHER:
             default:
                 // @TODO Remove exception, set value to NULL and add value validator
-                throw new Exception(sprintf("Unknown setting type '%s'", $this->type));
+                throw new Exception(sprintf("Unknown setting value_type '%s'", $this->value_type));
         }
 
         return $value;
@@ -79,7 +80,7 @@ class Setting extends Entity
 
     /**
      * Virtual field 'value' getter
-     * Return value based on type
+     * Return value based on value_type
      *
      * @return bool|float|int|string
      */
@@ -88,7 +89,7 @@ class Setting extends Entity
         if (!array_key_exists('value', $this->_properties)) {
 
             $val = null;
-            switch ($this->type)
+            switch ($this->value_type)
             {
                 case static::TYPE_BOOLEAN:
                     $val = (bool) $this->value_boolean;
@@ -116,7 +117,7 @@ class Setting extends Entity
     }
 
     /**
-     * Returns the type map
+     * Returns the value_type map
      * @return array
      */
     public static function typeMap()
