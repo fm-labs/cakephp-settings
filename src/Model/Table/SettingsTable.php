@@ -17,6 +17,18 @@ use Settings\Model\Entity\Setting;
 class SettingsTable extends Table
 {
 
+    const TYPE_STRING = 'string';
+    const TYPE_INT = 'int';
+    const TYPE_DOUBLE = 'double';
+    const TYPE_BOOLEAN = 'boolean';
+    const TYPE_TEXT = 'text';
+    const TYPE_DATE = 'date';
+    const TYPE_DATETIME = 'datetime';
+    const TYPE_JSON = 'json';
+    const TYPE_XML = 'xml';
+    const TYPE_SERIALIZED = 'serialized';
+    const TYPE_OTHER = 'other' ; // @deprecated
+
     /**
      * Initialize method
      *
@@ -27,8 +39,8 @@ class SettingsTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('settings_settings');
-        $this->displayField('name');
+        $this->table('settings');
+        $this->displayField('key');
         $this->primaryKey('id');
         $this->addBehavior('Timestamp');
     }
@@ -44,48 +56,29 @@ class SettingsTable extends Table
         $validator
             ->add('id', 'valid', ['rule' => 'numeric'])
             ->allowEmpty('id', 'create');
-            
-        $validator
-            ->allowEmpty('ref');
-            
+
         $validator
             ->allowEmpty('scope');
             
         $validator
-            ->requirePresence('name', 'create')
-            ->notEmpty('name');
+            ->requirePresence('key')
+            ->notEmpty('key');
+
+        $validator
+            ->allowEmpty('title');
+
+        $validator
+            ->allowEmpty('desc');
 
         $validator
             ->requirePresence('value_type', 'create')
             ->notEmpty('value_type');
             
         $validator
-            ->add('value_int', 'valid', ['rule' => 'numeric'])
-            ->allowEmpty('value_int');
-            
+            ->allowEmpty('value');
+
         $validator
-            ->add('value_double', 'valid', ['rule' => 'numeric'])
-            ->allowEmpty('value_double');
-            
-        $validator
-            ->allowEmpty('value_string');
-            
-        $validator
-            ->allowEmpty('value_text');
-            
-        $validator
-            ->add('value_boolean', 'valid', ['rule' => 'boolean'])
-            ->allowEmpty('value_boolean');
-            
-        $validator
-            ->add('value_datetime', 'valid', ['rule' => 'datetime'])
-            ->allowEmpty('value_datetime');
-            
-        $validator
-            ->allowEmpty('description');
-            
-        $validator
-            ->add('published', 'valid', ['rule' => 'boolean'])
+            ->add('is_published', 'valid', ['rule' => 'boolean'])
             ->allowEmpty('published');
 
         return $validator;
@@ -112,5 +105,19 @@ class SettingsTable extends Table
             $list[$entity->key] = $entity->id;
         });
         return $list;
+    }
+
+    public function listValueTypes()
+    {
+        $types = [
+            static::TYPE_INT,
+            static::TYPE_DOUBLE,
+            static::TYPE_STRING,
+            static::TYPE_TEXT,
+            static::TYPE_DATE,
+            static::TYPE_DATETIME,
+            static::TYPE_BOOLEAN
+        ];
+        return array_combine($types, $types);
     }
 }

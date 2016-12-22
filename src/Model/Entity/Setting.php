@@ -3,23 +3,13 @@ namespace Settings\Model\Entity;
 
 use Cake\Core\Exception\Exception;
 use Cake\ORM\Entity;
+use Settings\Model\Table\SettingsTable;
 
 /**
  * Setting Entity.
  */
 class Setting extends Entity
 {
-    const TYPE_STRING = 'string';
-    const TYPE_INT = 'int';
-    const TYPE_DOUBLE = 'double';
-    const TYPE_BOOLEAN = 'boolean';
-    const TYPE_TEXT = 'text';
-    const TYPE_DATE = 'date';
-    const TYPE_DATETIME = 'datetime';
-    const TYPE_JSON = 'json';
-    const TYPE_XML = 'xml';
-    const TYPE_SERIALIZED = 'serialized';
-    const TYPE_OTHER = 'other' ; // @deprecated
 
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
@@ -27,19 +17,14 @@ class Setting extends Entity
      * @var array
      */
     protected $_accessible = [
-        'ref' => true,
         'scope' => true,
-        'name' => true,
+        'title' => true,
+        'desc' => true,
+        'key' => true,
         'value_type' => true,
         'value' => true,
-        'value_int' => true,
-        'value_double' => true,
-        'value_string' => true,
-        'value_text' => true,
-        'value_boolean' => true,
-        'value_datetime' => true,
-        'description' => true,
-        'published' => true,
+        'default_value' => true,
+        'is_required' => true,
         'default' => true,
     ];
 
@@ -54,22 +39,20 @@ class Setting extends Entity
     {
         switch ($this->value_type)
         {
-            case static::TYPE_BOOLEAN:
-                $this->_properties['value_boolean'] = (bool) $value;
+            case SettingsTable::TYPE_BOOLEAN:
+                $value = (bool) $value;
                 break;
-            case static::TYPE_INT:
-                $this->_properties['value_int'] = (int) $value;
+            case SettingsTable::TYPE_INT:
+                $value = (int) $value;
                 break;
-            case static::TYPE_DOUBLE:
-                $this->_properties['value_double'] = (double) $value;
+            case SettingsTable::TYPE_DOUBLE:
+                $value = (double) $value;
                 break;
-            case static::TYPE_STRING:
-                $this->_properties['value_string'] = (string) $value;
+            case SettingsTable::TYPE_STRING:
+                $value = (string) $value;
+                $value = (string) $value;
                 break;
-            case static::TYPE_TEXT:
-                $this->_properties['value_text'] = (string) $value;
-                break;
-            case static::TYPE_OTHER:
+            case SettingsTable::TYPE_OTHER:
             default:
                 // @TODO Remove exception, set value to NULL and add value validator
                 throw new Exception(sprintf("Unknown setting value_type '%s'", $this->value_type));
@@ -86,50 +69,50 @@ class Setting extends Entity
      */
     protected function _getValue()
     {
-        if (!array_key_exists('value', $this->_properties)) {
 
-            $val = null;
-            switch ($this->value_type)
-            {
-                case static::TYPE_BOOLEAN:
-                    $val = (bool) $this->value_boolean;
-                    break;
-                case static::TYPE_INT:
-                    $val = (int) $this->value_int;
-                    break;
-                case static::TYPE_DOUBLE:
-                    $val = (double) $this->value_double;
-                    break;
-                case static::TYPE_STRING:
-                    $val = (string) $this->value_string;
-                    break;
-                case static::TYPE_TEXT:
-                    $val = (string) $this->value_text;
-                    break;
-                case static::TYPE_OTHER:
-                default:
-            }
-            $this->_properties['value'] = $val;
+        $value = (isset($this->_properties['value'])) ? $this->_properties['value'] : null;
+
+
+        switch ($this->value_type)
+        {
+            case SettingsTable::TYPE_BOOLEAN:
+                $value = (bool) $value;
+                break;
+            case SettingsTable::TYPE_INT:
+                $value = (int) $value;
+                break;
+            case SettingsTable::TYPE_DOUBLE:
+                $value = (double) $value;
+                break;
+            case SettingsTable::TYPE_STRING:
+                $value = (string) $value;
+                break;
+            case SettingsTable::TYPE_TEXT:
+                $value = (string) $value;
+                break;
+            case SettingsTable::TYPE_OTHER:
+            default:
+                break;
         }
 
-
-        return $this->_properties['value'];
+        return $value;
     }
 
     /**
      * Returns the value_type map
      * @return array
+     * @deprecated
      */
     public static function typeMap()
     {
         return [
-            'int' => static::TYPE_INT,
-            'double' => static::TYPE_DOUBLE,
-            'string' => static::TYPE_STRING,
-            'text' => static::TYPE_TEXT,
-            'date' => static::TYPE_DATE,
-            'datetime' => static::TYPE_DATETIME,
-            'boolean' => static::TYPE_BOOLEAN
+            'int' => SettingsTable::TYPE_INT,
+            'double' => SettingsTable::TYPE_DOUBLE,
+            'string' => SettingsTable::TYPE_STRING,
+            'text' => SettingsTable::TYPE_TEXT,
+            'date' => SettingsTable::TYPE_DATE,
+            'datetime' => SettingsTable::TYPE_DATETIME,
+            'boolean' => SettingsTable::TYPE_BOOLEAN
         ];
     }
 
@@ -138,14 +121,15 @@ class Setting extends Entity
      *
      * @param $typeStr
      * @return int
+     * @deprecated
      */
     public static function mapTypeStr($typeStr) {
-        $map = static::typeMap();
+        $map = SettingsTable::typeMap();
 
         if (isset($map[$typeStr])) {
             return $map[$typeStr];
         }
-        return static::TYPE_OTHER;
+        return SettingsTable::TYPE_OTHER;
     }
 
     /**
@@ -153,9 +137,10 @@ class Setting extends Entity
      *
      * @param $typeInt
      * @return int|null
+     * @deprecated
      */
     public static function mapType($typeInt) {
-        $map = array_flip(static::typeMap());
+        $map = array_flip(SettingsTable::typeMap());
 
         if (isset($map[$typeInt])) {
             return $map[$typeInt];

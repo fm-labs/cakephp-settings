@@ -1,4 +1,10 @@
 <?php
+
+if (!defined('SETTINGS')) {
+    define('SETTINGS');
+}
+
+
 if (\Cake\Core\Plugin::loaded('Backend')) {
     \Backend\Lib\Backend::hookPlugin('Settings');
 }
