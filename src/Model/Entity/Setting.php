@@ -21,11 +21,10 @@ class Setting extends Entity
         'title' => true,
         'desc' => true,
         'key' => true,
-        'value_type' => true,
+        'type' => true,
         'value' => true,
-        'default_value' => true,
-        'is_required' => true,
         'default' => true,
+        'is_required' => true,
     ];
 
     /**
@@ -37,7 +36,7 @@ class Setting extends Entity
      */
     protected function _setValue($value)
     {
-        switch ($this->value_type)
+        switch ($this->type)
         {
             case SettingsTable::TYPE_BOOLEAN:
                 $value = (bool) $value;
@@ -55,7 +54,7 @@ class Setting extends Entity
             case SettingsTable::TYPE_OTHER:
             default:
                 // @TODO Remove exception, set value to NULL and add value validator
-                throw new Exception(sprintf("Unknown setting value_type '%s'", $this->value_type));
+                throw new Exception(sprintf("Unknown setting type '%s'", $this->type));
         }
 
         return $value;
@@ -63,7 +62,7 @@ class Setting extends Entity
 
     /**
      * Virtual field 'value' getter
-     * Return value based on value_type
+     * Return value based on type
      *
      * @return bool|float|int|string
      */
@@ -73,7 +72,7 @@ class Setting extends Entity
         $value = (isset($this->_properties['value'])) ? $this->_properties['value'] : null;
 
 
-        switch ($this->value_type)
+        switch ($this->type)
         {
             case SettingsTable::TYPE_BOOLEAN:
                 $value = (bool) $value;
@@ -99,7 +98,7 @@ class Setting extends Entity
     }
 
     /**
-     * Returns the value_type map
+     * Returns the type map
      * @return array
      * @deprecated
      */

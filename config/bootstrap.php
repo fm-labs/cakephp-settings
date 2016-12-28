@@ -1,7 +1,7 @@
 <?php
 
 if (!defined('SETTINGS')) {
-    define('SETTINGS');
+    define('SETTINGS', CONFIG);
 }
 
 

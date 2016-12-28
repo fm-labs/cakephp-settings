@@ -1,6 +1,7 @@
 <?php
 namespace Settings\Model\Table;
 
+use Cake\Core\Plugin;
 use Cake\Event\Event;
 use Cake\ORM\Entity;
 use Cake\ORM\Query;
@@ -71,8 +72,8 @@ class SettingsTable extends Table
             ->allowEmpty('desc');
 
         $validator
-            ->requirePresence('value_type', 'create')
-            ->notEmpty('value_type');
+            ->requirePresence('type', 'create')
+            ->notEmpty('type');
             
         $validator
             ->allowEmpty('value');
@@ -119,5 +120,65 @@ class SettingsTable extends Table
             static::TYPE_BOOLEAN
         ];
         return array_combine($types, $types);
+    }
+
+    public function import($plugin = null)
+    {
+        // fetch existing settings
+        $query = $this->find()->where(['Settings.scope IS' => $plugin])->order(['Settings.key' => 'ASC']);
+        // compile existing settings
+        $existent = [];
+        foreach ($query->all() as $setting) {
+            $existent[$setting->key] = $setting;
+        }
+        
+        // read import settings schema
+        $settingsPath = ($plugin) ? Plugin::configPath($plugin) : CONFIG;
+        
+        $schema = SettingsConfig::readSchema($settingsPath);
+
+        $settings = [];
+        foreach ($schema as $key => $conf) {
+            
+            if (isset($existent[$key])) {
+                $settings[$key] = $this->patchEntity($existent[$key], $conf);
+            } else {
+                $settings[$key] = $this->newEntity(array_merge([
+                        'type' => 'string',
+                        'scope' => $plugin,
+                        'key' => $key,
+                        'default' => null,
+                        'value' => null,
+                    ], $conf));
+            }
+            
+        }
+
+        //@TODO Mark obsolete settings
+        foreach ($settings as $setting) {
+            if (!$this->save($setting)) {
+                debug($setting->errors());
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function dump($scope = 'global')
+    {
+        $settings = $this->find()
+            //->where(['Settings.scope IS' => $scope])
+            ->order(['Settings.key' => 'ASC'])
+            ->all()
+            ->toArray();
+
+        $compiled = [];
+        foreach ($settings as $setting) {
+            $compiled[$setting->key] = ($setting->value) ?: $setting->default;
+        }
+
+        $config = new SettingsConfig();
+        return $written = $config->dump($scope, $compiled);
     }
 }

@@ -170,39 +170,5 @@ class SettingsConfig extends PhpConfig
         }
 
         return $schema['Settings'];
-
-        /*
-        $schema = [];
-
-        // settings file reader
-        $settingsLoader = function () use ($scope, $settingsFile, &$schema) {
-
-            $settingsConfig = include $settingsFile;
-
-            if (!is_array($settingsConfig) || !isset($settingsConfig['Settings'])) {
-                throw new Exception(sprintf('Settings file "%s" has no Settings defined', $settingsFile));
-            }
-
-            // @TODO Safety Option: Only allow setting keys with prefix $key
-            // e.g. Plugin Foo requires setting key to start with 'Foo.'
-
-            $settings = [];
-            foreach ($settingsConfig['Settings'] as $setting => $sConfig) {
-                $settings[] = array_merge([
-                    //'id' => null,
-                    //'ref' => $key,
-                    //'scope' => $scope,
-                    'name' => $setting,
-                    'type' => 'string',
-                    'value' => null,
-                    'default' => null,
-                ], $sConfig);
-            }
-
-            return $settings;
-        };
-
-        return $settingsLoader();
-        */
     }
 }
