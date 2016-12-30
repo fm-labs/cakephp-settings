@@ -31,7 +31,7 @@ class SettingsConfig extends PhpConfig
      */
     public function __construct($configPath = null)
     {
-        if ($configPath === null || defined('SETTINGS')) {
+        if ($configPath === null && defined('SETTINGS')) {
             $configPath = constant('SETTINGS');
         }
         parent::__construct($configPath);
