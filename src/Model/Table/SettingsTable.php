@@ -1,5 +1,5 @@
 <?php
-namespace Settings\Model\Table;
+namespace Banana\Model\Table;
 
 use Cake\Core\Plugin;
 use Cake\Event\Event;
@@ -8,8 +8,7 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
-use Settings\Configure\Engine\SettingsConfig;
-use Settings\Model\Entity\Setting;
+use Banana\Configure\Engine\SettingsConfig;
 
 /**
  * Settings Model
@@ -69,18 +68,10 @@ class SettingsTable extends Table
             ->allowEmpty('title');
 
         $validator
-            ->allowEmpty('desc');
-
-        $validator
-            ->requirePresence('type', 'create')
-            ->notEmpty('type');
+            ->allowEmpty('type');
             
         $validator
             ->allowEmpty('value');
-
-        $validator
-            ->add('is_published', 'valid', ['rule' => 'boolean'])
-            ->allowEmpty('published');
 
         return $validator;
     }
@@ -122,6 +113,7 @@ class SettingsTable extends Table
         return array_combine($types, $types);
     }
 
+    /*
     public function import($plugin = null)
     {
         // fetch existing settings
@@ -164,8 +156,9 @@ class SettingsTable extends Table
 
         return true;
     }
+    */
 
-    public function dump($scope = 'global')
+    public function getCompiled($scope = 'global')
     {
         $settings = $this->find()
             //->where(['Settings.scope IS' => $scope])
@@ -178,7 +171,6 @@ class SettingsTable extends Table
             $compiled[$setting->key] = ($setting->value) ?: $setting->default;
         }
 
-        $config = new SettingsConfig();
-        return $written = $config->dump($scope, $compiled);
+        return $compiled;
     }
 }

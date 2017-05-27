@@ -1,9 +1,9 @@
 <?php
-namespace Settings\Model\Entity;
+namespace Banana\Model\Entity;
 
 use Cake\Core\Exception\Exception;
 use Cake\ORM\Entity;
-use Settings\Model\Table\SettingsTable;
+use Banana\Model\Table\SettingsTable;
 
 /**
  * Setting Entity.
@@ -18,13 +18,10 @@ class Setting extends Entity
      */
     protected $_accessible = [
         'scope' => true,
-        'title' => true,
-        'desc' => true,
         'key' => true,
         'type' => true,
         'value' => true,
         'default' => true,
-        'is_required' => true,
     ];
 
     /**
@@ -54,7 +51,8 @@ class Setting extends Entity
             case SettingsTable::TYPE_OTHER:
             default:
                 // @TODO Remove exception, set value to NULL and add value validator
-                throw new Exception(sprintf("Unknown setting type '%s'", $this->type));
+                //throw new Exception(sprintf("Unknown setting type '%s'", $this->type));
+                break;
         }
 
         return $value;
