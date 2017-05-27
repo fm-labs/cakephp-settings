@@ -3,14 +3,20 @@
 namespace Settings;
 
 
+use Cake\Core\Configure\FileConfigTrait;
 use Cake\Event\Event;
 use Cake\Event\EventDispatcherInterface;
 use Cake\Event\EventManager;
+use Cake\Form\Schema;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
 class SettingsManager implements EventDispatcherInterface
 {
+    /**
+     * @var string
+     */
+    protected $_scope;
 
     /**
      * @var array
@@ -27,9 +33,14 @@ class SettingsManager implements EventDispatcherInterface
      */
     protected $_compiled = [];
 
-    public function __construct()
+    public function __construct($settings = [], $scope = 'default')
     {
+        $this->_scope = $scope;
+        $this->_settings = $settings;
 
+        if (!$this->_scope) {
+            throw new \RuntimeException("SettingsManager: No scope defined");
+        }
     }
 
     protected function _loadSettings()
@@ -51,16 +62,52 @@ class SettingsManager implements EventDispatcherInterface
             return;
         }
 
-        $settings = TableRegistry::get('Settings.Settings')->find()->all();
         $values = [];
+        $settings = TableRegistry::get('Settings.Settings')->find()->where(['Settings.scope' => $this->_scope])->all();
 
         foreach ($settings as $setting) {
-            $namespace = $setting->scope;
-            $fieldKey = $namespace . '.' . $setting->key;
-            $values[$fieldKey] = $setting->value;
+            $values[$setting->key] = $setting->value;
         }
 
         $this->_values = $values;
+    }
+
+    public function buildFormSchema(Schema $schema)
+    {
+        $this->_loadSettings();
+        foreach ($this->_settings as $namespace => $settings) {
+            foreach ($settings as $key => $config) {
+                $columnConfig = array_diff_key($config, ['inputType' => null, 'input' => null, 'default' => null]);
+                $key = $namespace . '.' . $key;
+                $schema->addField($key, $columnConfig);
+            }
+        }
+        return $schema;
+    }
+
+    public function buildFormInputs()
+    {
+        $this->_loadSettings();
+        $inputs = [];
+        foreach ($this->_settings as $namespace => $settings) {
+            foreach ($settings as $key => $config) {
+
+                $inputType = (isset($config['inputType'])) ? $config['inputType'] : null;
+                $defaultValue = (isset($config['default'])) ? $config['default'] : null;
+                $fieldKey = $namespace . '.' . $key;
+                $inputConfig = [
+                    'type' => $inputType,
+                    'label' => $namespace . '.' . $key,
+                    'default' => $defaultValue,
+                ];
+                if (isset($config['input'])) {
+                    $inputConfig = array_merge($inputConfig, $config['input']);
+                }
+
+                $inputs[$fieldKey] = $inputConfig;
+            }
+        }
+        return $inputs;
     }
 
     public function value($key)
@@ -84,7 +131,17 @@ class SettingsManager implements EventDispatcherInterface
         $this->_loadSettings();
         $this->_loadValues();
 
+        $compiled = [];
+        foreach ($this->_settings as $namespace => $settings) {
+            foreach ($settings as $setting => $config) {
+                $key = $namespace . '.' . $setting;
+                $value = (isset($this->_values[$key])) ? $this->_values[$key] : null;
 
+                $compiled[$key] = $value;
+            }
+        }
+
+        return $this->_compiled = $compiled;
     }
 
     /**
@@ -97,6 +154,14 @@ class SettingsManager implements EventDispatcherInterface
         {
             $this->_values[$key] = $val;
         }
+        $this->_compiled = [];
+    }
+
+    public function dump()
+    {
+        $path = SETTINGS . 'settings_' . $this->_scope . '.php';
+        $contents = '<?php' . "\n" . 'return ' . var_export($this->getCompiled(), true) . ';';
+        return file_put_contents($path, $contents);
     }
 
     /**

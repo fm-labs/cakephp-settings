@@ -1,14 +1,12 @@
 <?php
-namespace Banana\Model\Table;
+namespace Settings\Model\Table;
 
-use Cake\Core\Plugin;
+use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\Entity;
-use Cake\ORM\Query;
-use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
-use Banana\Configure\Engine\SettingsConfig;
+use Settings\SettingsManager;
 
 /**
  * Settings Model
@@ -17,6 +15,7 @@ use Banana\Configure\Engine\SettingsConfig;
 class SettingsTable extends Table
 {
 
+    /*
     const TYPE_STRING = 'string';
     const TYPE_INT = 'int';
     const TYPE_DOUBLE = 'double';
@@ -28,6 +27,7 @@ class SettingsTable extends Table
     const TYPE_XML = 'xml';
     const TYPE_SERIALIZED = 'serialized';
     const TYPE_OTHER = 'other' ; // @deprecated
+    */
 
     /**
      * Initialize method
@@ -43,6 +43,31 @@ class SettingsTable extends Table
         $this->displayField('key');
         $this->primaryKey('id');
         $this->addBehavior('Timestamp');
+    }
+
+    public function updateSettings($list, $scope)
+    {
+        debug("updating");
+        debug($list);
+        $entities = [];
+        foreach ($list as $key => $val) {
+            $entities[$key] = $this->updateSetting($key, $val, $scope);
+        }
+        return $entities;
+    }
+
+    public function updateSetting($key, $value, $scope)
+    {
+        $setting = $this->find()->where(['key' => $key, 'scope' => $scope])->first();
+        if (!$setting) {
+            $setting = $this->newEntity();
+        }
+        $setting = $this->patchEntity($setting, compact('key', 'value', 'scope'));
+        if ($setting->errors()) {
+            debug($setting->errors());
+            return $setting;
+        }
+        return $this->save($setting);
     }
 
     /**
@@ -63,12 +88,6 @@ class SettingsTable extends Table
         $validator
             ->requirePresence('key')
             ->notEmpty('key');
-
-        $validator
-            ->allowEmpty('title');
-
-        $validator
-            ->allowEmpty('type');
             
         $validator
             ->allowEmpty('value');
@@ -78,14 +97,12 @@ class SettingsTable extends Table
 
     public function afterSave(Event $event, Entity $entity, \ArrayObject $options)
     {
-        //SettingsConfig::resetSettingsFilePath(SETTINGS, $entity->ref);
-        //return true;
+        //$this->dumpSettingsConfig($entity->scope);
     }
 
     public function afterDelete(Event $event, Entity $entity, \ArrayObject $options)
     {
-        //SettingsConfig::resetSettingsFilePath(SETTINGS, $entity->ref);
-        //return true;
+        //$this->dumpSettingsConfig($entity->scope);
     }
 
     public function listByKeys()
@@ -99,78 +116,13 @@ class SettingsTable extends Table
         return $list;
     }
 
-    public function listValueTypes()
+    public function getCompiled($scope = 'default')
     {
-        $types = [
-            static::TYPE_INT,
-            static::TYPE_DOUBLE,
-            static::TYPE_STRING,
-            static::TYPE_TEXT,
-            static::TYPE_DATE,
-            static::TYPE_DATETIME,
-            static::TYPE_BOOLEAN
-        ];
-        return array_combine($types, $types);
+        return (new SettingsManager([], $scope))->getCompiled();
     }
 
-    /*
-    public function import($plugin = null)
+    public function dumpSettingsConfig($scope)
     {
-        // fetch existing settings
-        $query = $this->find()->where(['Settings.scope IS' => $plugin])->order(['Settings.key' => 'ASC']);
-        // compile existing settings
-        $existent = [];
-        foreach ($query->all() as $setting) {
-            $existent[$setting->key] = $setting;
-        }
-        
-        // read import settings schema
-        $settingsPath = ($plugin) ? Plugin::configPath($plugin) : CONFIG;
-        
-        $schema = SettingsConfig::readSchema($settingsPath);
-
-        $settings = [];
-        foreach ($schema as $key => $conf) {
-            
-            if (isset($existent[$key])) {
-                $settings[$key] = $this->patchEntity($existent[$key], $conf);
-            } else {
-                $settings[$key] = $this->newEntity(array_merge([
-                        'type' => 'string',
-                        'scope' => $plugin,
-                        'key' => $key,
-                        'default' => null,
-                        'value' => null,
-                    ], $conf));
-            }
-            
-        }
-
-        //@TODO Mark obsolete settings
-        foreach ($settings as $setting) {
-            if (!$this->save($setting)) {
-                debug($setting->errors());
-                return false;
-            }
-        }
-
-        return true;
-    }
-    */
-
-    public function getCompiled($scope = 'global')
-    {
-        $settings = $this->find()
-            //->where(['Settings.scope IS' => $scope])
-            ->order(['Settings.key' => 'ASC'])
-            ->all()
-            ->toArray();
-
-        $compiled = [];
-        foreach ($settings as $setting) {
-            $compiled[$setting->key] = ($setting->value) ?: $setting->default;
-        }
-
-        return $compiled;
+        Configure::dump($scope, 'settings', ['Settings']);
     }
 }
