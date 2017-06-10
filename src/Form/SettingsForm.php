@@ -32,6 +32,7 @@ class SettingsForm extends Form
         if (!$this->_manager) {
             $this->_manager = new SettingsManager();
         }
+
         return $this->_manager;
     }
 
@@ -66,6 +67,7 @@ class SettingsForm extends Form
         if (empty($this->_inputs)) {
             $this->_inputs = $this->manager()->buildFormInputs();
         }
+
         return $this->_inputs;
     }
 
@@ -79,6 +81,7 @@ class SettingsForm extends Form
         if ($value === null && Configure::check($key)) {
             $value = Configure::read($key);
         }
+
         return $value;
     }
 

@@ -58,6 +58,7 @@ class SettingsTable extends Table
         foreach ($list as $key => $val) {
             $entities[$key] = $this->updateSetting($key, $val, $scope);
         }
+
         return $entities;
     }
 
@@ -76,8 +77,10 @@ class SettingsTable extends Table
         $setting = $this->patchEntity($setting, compact('key', 'value', 'scope'));
         if ($setting->errors()) {
             debug($setting->errors());
+
             return $setting;
         }
+
         return $this->save($setting);
     }
 
@@ -95,11 +98,11 @@ class SettingsTable extends Table
 
         $validator
             ->allowEmpty('scope');
-            
+
         $validator
             ->requirePresence('key')
             ->notEmpty('key');
-            
+
         $validator
             ->allowEmpty('value');
 
@@ -137,6 +140,7 @@ class SettingsTable extends Table
         array_walk($data, function ($entity) use (&$list) {
             $list[$entity->key] = $entity->id;
         });
+
         return $list;
     }
 

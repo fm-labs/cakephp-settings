@@ -62,7 +62,7 @@ class SettingsManager implements EventDispatcherInterface
 
         // b) collect settings definitions with event
         $event = $this->dispatchEvent('Settings.get');
-        $this->_settings = (array) $event->result;
+        $this->_settings = (array)$event->result;
     }
 
     /**
@@ -98,6 +98,7 @@ class SettingsManager implements EventDispatcherInterface
                 $schema->addField($key, $columnConfig);
             }
         }
+
         return $schema;
     }
 
@@ -110,7 +111,6 @@ class SettingsManager implements EventDispatcherInterface
         $inputs = [];
         foreach ($this->_settings as $namespace => $settings) {
             foreach ($settings as $key => $config) {
-
                 $inputType = (isset($config['inputType'])) ? $config['inputType'] : null;
                 $defaultValue = (isset($config['default'])) ? $config['default'] : null;
                 $fieldKey = $namespace . '.' . $key;
@@ -126,6 +126,7 @@ class SettingsManager implements EventDispatcherInterface
                 $inputs[$fieldKey] = $inputConfig;
             }
         }
+
         return $inputs;
     }
 
@@ -136,6 +137,7 @@ class SettingsManager implements EventDispatcherInterface
     public function value($key)
     {
         $this->_loadValues();
+
         return (isset($this->_values[$key])) ? $this->_values[$key] : null;
     }
 
@@ -145,6 +147,7 @@ class SettingsManager implements EventDispatcherInterface
     public function getSettings()
     {
         $this->_loadSettings();
+
         return $this->_settings;
     }
 
@@ -180,11 +183,11 @@ class SettingsManager implements EventDispatcherInterface
     public function apply(array $data = [])
     {
         $data = Hash::flatten($data);
-        foreach ($data as $key => $val)
-        {
+        foreach ($data as $key => $val) {
             $this->_values[$key] = $val;
         }
         $this->_compiled = [];
+
         return $this;
     }
 
@@ -192,6 +195,7 @@ class SettingsManager implements EventDispatcherInterface
     {
         $path = SETTINGS . 'settings_' . $this->_scope . '.php';
         $contents = '<?php' . "\n" . 'return ' . var_export($this->getCompiled(), true) . ';';
+
         return file_put_contents($path, $contents);
     }
 

@@ -72,7 +72,6 @@ class SettingsConfigLegacy extends PhpConfig
         //}
     }
 
-
     /**
      * Read Settings configuration
      *
@@ -99,6 +98,7 @@ class SettingsConfigLegacy extends PhpConfig
         // generate compiled settings if compiled settings file is missing
         if (!is_file($file)) {
             list ($settings, $compiled) = $this->_generateCompiledSettings($key, $this->_autoDump);
+
             return $compiled;
         }
 
@@ -128,6 +128,7 @@ class SettingsConfigLegacy extends PhpConfig
         $contents = '<?php' . "\n" . 'return ' . var_export($data, true) . ';' . "\n";
 
         $filename = $this->_getCompiledSettingsFilePath($key, false);
+
         return file_put_contents($filename, $contents);
     }
 
@@ -145,6 +146,7 @@ class SettingsConfigLegacy extends PhpConfig
         $contents = json_encode($data, JSON_PRETTY_PRINT);
 
         $filename = $this->_getCompiledSettingsSchemaFilePath($key, false);
+
         return file_put_contents($filename, $contents);
     }
 
@@ -233,7 +235,6 @@ class SettingsConfigLegacy extends PhpConfig
             }
         };
 
-
         // invoke file- and database settings loader
         $sFileLoader($key, $this->_getFilePath($sKey, true));
         $sDbLoader($key, $this->_modelClass);
@@ -245,7 +246,6 @@ class SettingsConfigLegacy extends PhpConfig
 
         return [$settings, $compiled];
     }
-
 
     /**
      * Return path to settings file

@@ -53,6 +53,7 @@ class SettingsConfig extends PhpConfig
         $contents = '<?php' . "\n" . 'return ' . var_export($data, true) . ';' . "\n";
 
         $filename = $this->_getFilePath($key);
+
         return file_put_contents($filename, $contents);
     }
 
