@@ -45,6 +45,11 @@ class SettingsTable extends Table
         $this->addBehavior('Timestamp');
     }
 
+    /**
+     * @param $list
+     * @param $scope
+     * @return array
+     */
     public function updateSettings($list, $scope)
     {
         debug("updating");
@@ -56,6 +61,12 @@ class SettingsTable extends Table
         return $entities;
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @param $scope
+     * @return bool|\Cake\Datasource\EntityInterface|Entity|mixed
+     */
     public function updateSetting($key, $value, $scope)
     {
         $setting = $this->find()->where(['key' => $key, 'scope' => $scope])->first();
@@ -95,16 +106,29 @@ class SettingsTable extends Table
         return $validator;
     }
 
+    /**
+     * @param Event $event
+     * @param Entity $entity
+     * @param \ArrayObject $options
+     */
     public function afterSave(Event $event, Entity $entity, \ArrayObject $options)
     {
         //$this->dumpSettingsConfig($entity->scope);
     }
 
+    /**
+     * @param Event $event
+     * @param Entity $entity
+     * @param \ArrayObject $options
+     */
     public function afterDelete(Event $event, Entity $entity, \ArrayObject $options)
     {
         //$this->dumpSettingsConfig($entity->scope);
     }
 
+    /**
+     * @return array
+     */
     public function listByKeys()
     {
         //@TODO Refactor with Collection methods
@@ -116,11 +140,18 @@ class SettingsTable extends Table
         return $list;
     }
 
+    /**
+     * @param string $scope
+     * @return array
+     */
     public function getCompiled($scope = 'default')
     {
         return (new SettingsManager([], $scope))->getCompiled();
     }
 
+    /**
+     * @param $scope
+     */
     public function dumpSettingsConfig($scope)
     {
         Configure::dump($scope, 'settings', ['Settings']);

@@ -2,9 +2,7 @@
 namespace Settings\Configure\Engine;
 
 use Cake\Core\Configure\Engine\PhpConfig;
-use Cake\Core\Configure;
 use Cake\Database\Exception as DatabaseException;
-use Settings\SettingsManager;
 
 /**
  * Class SettingsConfig

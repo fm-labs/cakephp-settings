@@ -2,8 +2,6 @@
 
 namespace Settings;
 
-
-use Cake\Core\Configure\FileConfigTrait;
 use Cake\Event\Event;
 use Cake\Event\EventDispatcherInterface;
 use Cake\Event\EventManager;
@@ -11,6 +9,10 @@ use Cake\Form\Schema;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
+/**
+ * Class SettingsManager
+ * @package Settings
+ */
 class SettingsManager implements EventDispatcherInterface
 {
     /**
@@ -33,6 +35,10 @@ class SettingsManager implements EventDispatcherInterface
      */
     protected $_compiled = [];
 
+    /**
+     * @param array $settings
+     * @param string $scope
+     */
     public function __construct($settings = [], $scope = 'default')
     {
         $this->_scope = $scope;
@@ -43,6 +49,9 @@ class SettingsManager implements EventDispatcherInterface
         }
     }
 
+    /**
+     *
+     */
     protected function _loadSettings()
     {
         if (!empty($this->_settings)) {
@@ -56,6 +65,9 @@ class SettingsManager implements EventDispatcherInterface
         $this->_settings = (array) $event->result;
     }
 
+    /**
+     *
+     */
     protected function _loadValues()
     {
         if (!empty($this->_values)) {
@@ -72,6 +84,10 @@ class SettingsManager implements EventDispatcherInterface
         $this->_values = $values;
     }
 
+    /**
+     * @param Schema $schema
+     * @return Schema
+     */
     public function buildFormSchema(Schema $schema)
     {
         $this->_loadSettings();
@@ -85,6 +101,9 @@ class SettingsManager implements EventDispatcherInterface
         return $schema;
     }
 
+    /**
+     * @return array
+     */
     public function buildFormInputs()
     {
         $this->_loadSettings();
@@ -110,18 +129,28 @@ class SettingsManager implements EventDispatcherInterface
         return $inputs;
     }
 
+    /**
+     * @param $key
+     * @return null
+     */
     public function value($key)
     {
         $this->_loadValues();
         return (isset($this->_values[$key])) ? $this->_values[$key] : null;
     }
 
+    /**
+     * @return array
+     */
     public function getSettings()
     {
         $this->_loadSettings();
         return $this->_settings;
     }
 
+    /**
+     * @return array
+     */
     public function getCompiled()
     {
         if (!empty($this->_compiled)) {
@@ -146,6 +175,7 @@ class SettingsManager implements EventDispatcherInterface
 
     /**
      * @param array $data
+     * @return $this
      */
     public function apply(array $data = [])
     {
@@ -155,6 +185,7 @@ class SettingsManager implements EventDispatcherInterface
             $this->_values[$key] = $val;
         }
         $this->_compiled = [];
+        return $this;
     }
 
     public function dump()

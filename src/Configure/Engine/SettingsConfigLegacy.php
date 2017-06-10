@@ -4,7 +4,6 @@ namespace Settings\Configure\Engine;
 use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Core\Configure;
 use Cake\Core\Exception\Exception;
-use Cake\Core\Plugin;
 use Cake\Log\Log;
 use Cake\ORM\TableRegistry;
 use Settings\Model\Entity\Setting;

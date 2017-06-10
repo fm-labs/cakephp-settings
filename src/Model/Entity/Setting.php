@@ -1,9 +1,7 @@
 <?php
 namespace Settings\Model\Entity;
 
-use Cake\Core\Exception\Exception;
 use Cake\ORM\Entity;
-use Banana\Model\Table\SettingsTable;
 
 /**
  * Setting Entity.
@@ -24,10 +22,16 @@ class Setting extends Entity
         '*' => false
     ];
 
+    /**
+     * @var array
+     */
     protected $_virtual = [
         'scoped_key'
     ];
 
+    /**
+     * @return string
+     */
     protected function _getScopedKey()
     {
         return sprintf("%s.%s", $this->scope, $this->key);

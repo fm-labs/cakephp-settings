@@ -2,11 +2,14 @@
 
 namespace Settings\View\Form;
 
-
 use Cake\Network\Request;
 use Cake\View\Form\ContextInterface;
 use Settings\Form\SettingsForm;
 
+/**
+ * Class SettingsFormContext
+ * @package Settings\View\Form
+ */
 class SettingsFormContext implements ContextInterface
 {
 

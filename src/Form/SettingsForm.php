@@ -2,12 +2,15 @@
 
 namespace Settings\Form;
 
-
 use Cake\Core\Configure;
 use Cake\Form\Form;
 use Cake\Form\Schema;
 use Settings\SettingsManager;
 
+/**
+ * Class SettingsForm
+ * @package Settings\Form
+ */
 class SettingsForm extends Form
 {
     /**
@@ -20,26 +23,40 @@ class SettingsForm extends Form
      */
     protected $_inputs = [];
 
-    public function __construct()
-    {
-        $this->_manager = new SettingsManager();
-    }
-
+    /**
+    /**
+     * @return SettingsManager
+     */
     public function manager()
     {
+        if (!$this->_manager) {
+            $this->_manager = new SettingsManager();
+        }
         return $this->_manager;
     }
 
+    /**
+     * @param Schema|null $schema
+     * @return Schema
+     */
     public function schema(Schema $schema = null)
     {
         return parent::schema($schema);
     }
 
+    /**
+     * @param Schema $schema
+     * @return Schema
+     */
     protected function _buildSchema(Schema $schema)
     {
-        return $this->_manager->buildFormSchema($schema);
+        return $this->manager()->buildFormSchema($schema);
     }
 
+    /**
+     * @param array $inputs
+     * @return array
+     */
     public function inputs($inputs = [])
     {
         if (!empty($inputs)) {
@@ -47,22 +64,30 @@ class SettingsForm extends Form
         }
 
         if (empty($this->_inputs)) {
-            $this->_inputs = $this->_manager->buildFormInputs();
+            $this->_inputs = $this->manager()->buildFormInputs();
         }
         return $this->_inputs;
     }
 
+    /**
+     * @param $key
+     * @return mixed|null
+     */
     public function value($key)
     {
-        $value = $this->_manager->value($key);
+        $value = $this->manager()->value($key);
         if ($value === null && Configure::check($key)) {
             $value = Configure::read($key);
         }
         return $value;
     }
 
+    /**
+     * @param array $data
+     * @return $this|bool
+     */
     public function execute(array $data = [])
     {
-        $this->_manager->apply($data);
+        return $this->manager()->apply($data);
     }
 }
