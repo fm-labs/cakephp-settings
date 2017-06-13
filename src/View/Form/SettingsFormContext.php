@@ -8,6 +8,7 @@ use Settings\Form\SettingsForm;
 
 /**
  * Class SettingsFormContext
+ *
  * @package Settings\View\Form
  */
 class SettingsFormContext implements ContextInterface
@@ -31,9 +32,9 @@ class SettingsFormContext implements ContextInterface
             'entity' => null,
         ];
 
-        if (!($context['entity']) instanceof SettingsForm) {
-            throw new \RuntimeException("SettingsFormContext: Invalid entity type");
-        }
+        //if (!($context['entity']) instanceof SettingsForm) {
+        //    throw new \InvalidArgumentException("SettingsFormContext: Invalid context");
+        //}
 
         $this->_form = $context['entity'];
     }
@@ -45,7 +46,7 @@ class SettingsFormContext implements ContextInterface
      */
     public function primaryKey()
     {
-        return false;
+        return [];
     }
 
     /**

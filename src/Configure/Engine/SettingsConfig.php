@@ -34,6 +34,10 @@ class SettingsConfig extends PhpConfig
         parent::__construct($configPath);
     }
 
+    /**
+     * @param string $key
+     * @return array
+     */
     public function read($key)
     {
         return parent::read($key);
@@ -50,9 +54,8 @@ class SettingsConfig extends PhpConfig
      */
     public function dump($key, array $data)
     {
-        $contents = '<?php' . "\n" . 'return ' . var_export($data, true) . ';' . "\n";
-
         $filename = $this->_getFilePath($key);
+        $contents = '<?php' . "\n" . 'return ' . var_export($data, true) . ';' . "\n";
 
         return file_put_contents($filename, $contents);
     }

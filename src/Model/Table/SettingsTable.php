@@ -14,21 +14,6 @@ use Settings\SettingsManager;
  */
 class SettingsTable extends Table
 {
-
-    /*
-    const TYPE_STRING = 'string';
-    const TYPE_INT = 'int';
-    const TYPE_DOUBLE = 'double';
-    const TYPE_BOOLEAN = 'boolean';
-    const TYPE_TEXT = 'text';
-    const TYPE_DATE = 'date';
-    const TYPE_DATETIME = 'datetime';
-    const TYPE_JSON = 'json';
-    const TYPE_XML = 'xml';
-    const TYPE_SERIALIZED = 'serialized';
-    const TYPE_OTHER = 'other' ; // @deprecated
-    */
-
     /**
      * Initialize method
      *
@@ -52,8 +37,6 @@ class SettingsTable extends Table
      */
     public function updateSettings($list, $scope)
     {
-        debug("updating");
-        debug($list);
         $entities = [];
         foreach ($list as $key => $val) {
             $entities[$key] = $this->updateSetting($key, $val, $scope);
@@ -74,6 +57,7 @@ class SettingsTable extends Table
         if (!$setting) {
             $setting = $this->newEntity();
         }
+
         $setting = $this->patchEntity($setting, compact('key', 'value', 'scope'));
         if ($setting->errors()) {
             debug($setting->errors());
@@ -150,7 +134,7 @@ class SettingsTable extends Table
      */
     public function getCompiled($scope = 'default')
     {
-        return (new SettingsManager([], $scope))->getCompiled();
+        return (new SettingsManager($scope))->getCompiled();
     }
 
     /**

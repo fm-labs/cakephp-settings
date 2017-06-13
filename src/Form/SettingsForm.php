@@ -9,6 +9,7 @@ use Settings\SettingsManager;
 
 /**
  * Class SettingsForm
+ *
  * @package Settings\Form
  */
 class SettingsForm extends Form
@@ -24,11 +25,23 @@ class SettingsForm extends Form
     protected $_inputs = [];
 
     /**
+     * @param SettingsManager|null $manager
+     */
+    public function __construct(SettingsManager $manager = null)
+    {
+        $this->manager($manager);
+    }
+
     /**
+     * @param SettingsManager $manager
      * @return SettingsManager
      */
-    public function manager()
+    public function manager(SettingsManager $manager = null)
     {
+        if ($manager !== null) {
+            $this->_manager = $manager;
+        }
+
         if (!$this->_manager) {
             $this->_manager = new SettingsManager();
         }

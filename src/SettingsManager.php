@@ -39,18 +39,18 @@ class SettingsManager implements EventDispatcherInterface
      * @param array $settings
      * @param string $scope
      */
-    public function __construct($settings = [], $scope = 'default')
+    public function __construct($scope = 'default', $settings = [])
     {
         $this->_scope = $scope;
         $this->_settings = $settings;
 
         if (!$this->_scope) {
-            throw new \RuntimeException("SettingsManager: No scope defined");
+            throw new \InvalidArgumentException("SettingsManager: Scope can not be empty");
         }
     }
 
     /**
-     *
+     * Load available setting definitions
      */
     protected function _loadSettings()
     {
@@ -66,7 +66,7 @@ class SettingsManager implements EventDispatcherInterface
     }
 
     /**
-     *
+     * Load settings values from persistent storage
      */
     protected function _loadValues()
     {
@@ -75,7 +75,10 @@ class SettingsManager implements EventDispatcherInterface
         }
 
         $values = [];
-        $settings = TableRegistry::get('Settings.Settings')->find()->where(['Settings.scope' => $this->_scope])->all();
+        $settings = TableRegistry::get('Settings.Settings')
+            ->find()
+            ->where(['Settings.scope' => $this->_scope])
+            ->all();
 
         foreach ($settings as $setting) {
             $values[$setting->key] = $setting->value;
@@ -177,13 +180,13 @@ class SettingsManager implements EventDispatcherInterface
     }
 
     /**
-     * @param array $data
+     * @param array $values
      * @return $this
      */
-    public function apply(array $data = [])
+    public function apply(array $values = [])
     {
-        $data = Hash::flatten($data);
-        foreach ($data as $key => $val) {
+        $values = Hash::flatten($values);
+        foreach ($values as $key => $val) {
             $this->_values[$key] = $val;
         }
         $this->_compiled = [];
@@ -191,6 +194,10 @@ class SettingsManager implements EventDispatcherInterface
         return $this;
     }
 
+    /**
+     * @return int
+     * @TODO Refactor using config engine
+     */
     public function dump()
     {
         $path = SETTINGS . 'settings_' . $this->_scope . '.php';
