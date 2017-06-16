@@ -112,24 +112,39 @@ class SettingsManager implements EventDispatcherInterface
     {
         $this->_loadSettings();
         $inputs = [];
+        /*
+        $autoInputType = function($dataType) {
+            switch ($dataType) {
+                case 'text':
+                    return 'textarea';
+
+                case 'string':
+                default:
+                    return 'text';
+            }
+        };
+        */
         foreach ($this->_settings as $namespace => $settings) {
             foreach ($settings as $key => $config) {
-                $inputType = (isset($config['inputType'])) ? $config['inputType'] : null;
-                $defaultValue = (isset($config['default'])) ? $config['default'] : null;
+
                 $fieldKey = $namespace . '.' . $key;
-                $inputConfig = [
-                    'type' => $inputType,
-                    'label' => $namespace . '.' . $key,
-                    'default' => $defaultValue,
-                ];
-                if (isset($config['input'])) {
-                    $inputConfig = array_merge($inputConfig, $config['input']);
+                $config += ['input' => [], 'default' => null];
+
+                $input = $config['input'];
+                unset($config['input']);
+                if (is_string($input)) {
+                    $input = ['type' => $input];
                 }
 
-                $inputs[$fieldKey] = $inputConfig;
+                $defaultInput = [
+                    'type' => null,
+                    'label' => $namespace . '.' . $key,
+                    'default' => $config['default'],
+                ];
+                $input = array_merge($defaultInput, $input);
+                $inputs[$fieldKey] = $input;
             }
         }
-
         return $inputs;
     }
 
