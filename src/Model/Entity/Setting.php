@@ -42,7 +42,8 @@ class Setting extends Entity
 
     protected function _getDefault()
     {
-        return '-';
+        //@todo Implement me
+        return null;
     }
 
     protected function _getActual()
