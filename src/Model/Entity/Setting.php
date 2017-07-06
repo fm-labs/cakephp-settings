@@ -1,6 +1,7 @@
 <?php
 namespace Settings\Model\Entity;
 
+use Cake\Core\Configure;
 use Cake\ORM\Entity;
 
 /**
@@ -26,7 +27,9 @@ class Setting extends Entity
      * @var array
      */
     protected $_virtual = [
-        'scoped_key'
+        'scoped_key',
+        'default',
+        'actual'
     ];
 
     /**
@@ -35,5 +38,15 @@ class Setting extends Entity
     protected function _getScopedKey()
     {
         return sprintf("%s.%s", $this->scope, $this->key);
+    }
+
+    protected function _getDefault()
+    {
+        return '-';
+    }
+
+    protected function _getActual()
+    {
+        return Configure::read($this->key);
     }
 }
