@@ -107,10 +107,7 @@ class SettingsManager
                     'value' => ($this->value($fieldKey)) ?: Configure::read($fieldKey)
                 ];
                 $input = array_merge($defaultInput, $input);
-
-                if (!$input['type']) {
-                    $input['type'] = $this->_mapTypeToInputType($config['type']);
-                }
+                $input = $this->_buildInput($input, $config);
 
                 $inputs[$fieldKey] = $input;
             }
@@ -118,27 +115,43 @@ class SettingsManager
         return $inputs;
     }
 
+    protected function _buildInput(array $input, array $config = [])
+    {
+
+        if (!$input['type']) {
+            switch($config['type']) {
+                case "boolean":
+                    $input['type'] = "checkbox";
+                    $input['val'] = $input['value'];
+                    $input['value'] = 1;
+                    break;
+
+                case "text":
+                case "html":
+                    $input['type'] = "textarea";
+                    break;
+
+                case "integer":
+                case "double":
+                case "decimal":
+                    $input['type'] = "numeric";
+                    break;
+
+                case "string":
+                    $input['type'] = "text";
+                    break;
+
+                default:
+                    $input['type'] = $config['type'];
+                    break;
+            }
+        }
+
+        return $input;
+    }
+
     protected function _mapTypeToInputType($type)
     {
-        switch($type) {
-            case "boolean":
-                return "checkbox";
-
-            case "text":
-            case "html":
-                return "textarea";
-
-            case "integer":
-            case "double":
-            case "decimal":
-                return "numeric";
-
-            case "string":
-                return "text";
-
-            default:
-                return $type;
-        }
 
     }
 
