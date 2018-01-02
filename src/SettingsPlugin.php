@@ -30,7 +30,7 @@ class SettingsPlugin implements EventListenerInterface
         $event->subject()->addItem([
             'title' => 'Settings',
             'url' => ['plugin' => 'Banana', 'controller' => 'Settings', 'action' => 'manage'],
-            'data-icon' => 'gears',
+            'data-icon' => 'sliders',
         ]);
     }
 
