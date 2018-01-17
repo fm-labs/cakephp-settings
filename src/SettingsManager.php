@@ -3,6 +3,7 @@
 namespace Settings;
 
 use Cake\Core\Configure;
+use Cake\Event\EventListenerInterface;
 use Cake\Form\Schema;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
@@ -12,7 +13,7 @@ use Cake\Utility\Text;
  * Class SettingsManager
  * @package Settings
  */
-class SettingsManager
+class SettingsManager implements EventListenerInterface
 {
     /**
      * @var array
@@ -28,6 +29,17 @@ class SettingsManager
      * @var array
      */
     protected $_compiled = [];
+
+
+    public function implementedEvents()
+    {
+        return ['Banana.init' => 'init'];
+    }
+
+    public function init()
+    {
+        //debug("SettingsManager init");
+    }
 
     public function describe()
     {
