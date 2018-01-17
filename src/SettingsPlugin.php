@@ -17,30 +17,9 @@ class SettingsPlugin implements EventListenerInterface
      */
     public function implementedEvents()
     {
-        return [
-            //'Backend.init' => '',
-            'Backend.Menu.get' => ['callable' => 'getBackendMenu', 'priority' => 99 ],
-        ];
+        return [];
     }
 
-    /**
-     * @param Event $event
-     */
-    public function getBackendMenu(Event $event)
-    {
-        if ($event->subject() instanceof \Banana\Menu\Menu) {
-            $event->subject()->addItem([
-                //'plugin' => 'Settings',
-                ////'section' => 'advanced',
-
-                'title' => 'Settings',
-                'url' => ['plugin' => 'Banana', 'controller' => 'Settings', 'action' => 'manage'],
-                'data-icon' => 'sliders',
-            ]);
-
-            // -- add menu children from registered settings sections --
-        }
-    }
 
     public function __invoke()
     {
