@@ -2,6 +2,7 @@
 
 namespace Settings;
 
+use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 
@@ -23,5 +24,6 @@ class SettingsPlugin implements EventListenerInterface
 
     public function __invoke()
     {
+        Configure::load('default', 'settings');
     }
 }
