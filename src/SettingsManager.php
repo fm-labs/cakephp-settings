@@ -13,7 +13,7 @@ use Cake\Utility\Text;
  * Class SettingsManager
  * @package Settings
  */
-class SettingsManager implements EventListenerInterface
+class SettingsManager
 {
     /**
      * @var array
@@ -30,16 +30,6 @@ class SettingsManager implements EventListenerInterface
      */
     protected $_compiled = [];
 
-
-    public function implementedEvents()
-    {
-        return ['Banana.init' => 'init'];
-    }
-
-    public function init()
-    {
-        //debug("SettingsManager init");
-    }
 
     public function describe()
     {
