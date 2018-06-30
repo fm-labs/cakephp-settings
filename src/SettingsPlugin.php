@@ -2,28 +2,13 @@
 
 namespace Settings;
 
-use Cake\Core\Configure;
-use Cake\Event\Event;
-use Cake\Event\EventListenerInterface;
-
-class SettingsPlugin implements EventListenerInterface
+class SettingsPlugin implements SettingsInterface
 {
-    /**
-     * Returns a list of events this object is implementing. When the class is registered
-     * in an event manager, each individual method will be associated with the respective event.
-     *
-     * @see EventListenerInterface::implementedEvents()
-     * @return array associative array or event key names pointing to the function
-     * that should be called in the object when the respective event is fired
-     */
-    public function implementedEvents()
+    public function buildSettings(SettingsManager $settings)
     {
-        return [];
-    }
-
-
-    public function __invoke()
-    {
-        Configure::load('default', 'settings');
+        $settings->add('Settings', 'autoBackup', [
+            'type' => 'boolean',
+            'default' => false,
+        ]);
     }
 }
