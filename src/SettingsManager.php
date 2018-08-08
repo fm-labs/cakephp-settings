@@ -3,6 +3,7 @@
 namespace Settings;
 
 use Cake\Core\Configure;
+use Cake\Core\StaticConfigTrait;
 use Cake\Event\EventListenerInterface;
 use Cake\Form\Schema;
 use Cake\Utility\Hash;
@@ -15,6 +16,8 @@ use Cake\Utility\Text;
  */
 class SettingsManager
 {
+    use StaticConfigTrait;
+
     /**
      * @var array
      */

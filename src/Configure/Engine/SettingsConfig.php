@@ -1,20 +1,23 @@
 <?php
 namespace Settings\Configure\Engine;
 
-use Cake\Core\Configure\Engine\PhpConfig;
+use Cake\Cache\Cache;
+use Cake\Core\Configure\ConfigEngineInterface;
 use Cake\Database\Exception as DatabaseException;
+use Cake\Log\Log;
+use Cake\ORM\TableRegistry;
 
 /**
  * Class SettingsConfig
  *
  * @package Settings\Configure\Engine
  */
-class SettingsConfig extends PhpConfig
+class SettingsConfig implements ConfigEngineInterface
 {
     /**
      * @var string Path to settings dir
      */
-    protected $_path;
+    protected $_modelClass = "Settings.Settings";
 
     /**
      * File extension.
@@ -26,21 +29,37 @@ class SettingsConfig extends PhpConfig
     /**
      * @param string|null $configPath Path to config dir. Defaults to ROOT/config.
      */
-    public function __construct($configPath = null)
+    public function __construct($modelClass = null)
     {
-        if ($configPath === null && defined('SETTINGS')) {
-            $configPath = constant('SETTINGS');
+        if ($modelClass) {
+            $this->_modelClass = $modelClass;
         }
-        parent::__construct($configPath);
     }
 
     /**
      * @param string $key
      * @return array
+     * @throws \Exception
      */
     public function read($key)
     {
-        return parent::read($key);
+        $settings = Cache::read($key, 'settings');
+        if (!$settings) {
+
+            try {
+                $Table = TableRegistry::get('Settings.Settings');
+                $query = $Table->find('list', ['keyField' => 'key', 'valueField' => 'value'])
+                    ->where(['scope' => $key]);
+                $settings = $query->toArray();
+
+                Cache::write($key, $settings, 'settings');
+            } catch (\Exception $ex) {
+                Log::error('SettingsConfig: ' . $ex->getMessage(), ['settings']);
+                throw $ex;
+            }
+        }
+
+        return $settings;
     }
 
     /**
