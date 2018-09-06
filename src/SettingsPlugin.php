@@ -18,7 +18,7 @@ class SettingsPlugin implements BackendPluginInterface, SettingsInterface, Event
     public function implementedEvents()
     {
         return [
-            'Backend.Sidebar.build' => 'buildBackendMenu',
+            'Backend.Sidebar.build' => ['callable' => 'buildBackendMenu', 'priority' => 90]
         ];
     }
 
