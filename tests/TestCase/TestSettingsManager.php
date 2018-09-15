@@ -17,7 +17,7 @@ class TestSettingsManager extends SettingsManager
      */
     public function __construct($scope = 'test', $settings = [])
     {
-        parent::__construct($scope, $settings);
+        //parent::__construct($scope, $settings);
     }
 
     /**

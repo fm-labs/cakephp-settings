@@ -14,6 +14,7 @@ if (!\Cake\Cache\Cache::config('settings')) {
         'prefix' => 'settings_'
     ]);
 }
+
 if (!\Cake\Log\Log::config('settings')) {
     \Cake\Log\Log::config('settings', [
         'className' => 'Cake\Log\Engine\FileLog',
