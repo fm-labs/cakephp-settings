@@ -27,7 +27,7 @@ class SettingsConfig implements ConfigEngineInterface
     protected $_extension = '.php';
 
     /**
-     * @param string|null $configPath Path to config dir. Defaults to ROOT/config.
+     * @param string|null $modelClass
      */
     public function __construct($modelClass = null)
     {
@@ -87,6 +87,6 @@ class SettingsConfig implements ConfigEngineInterface
      */
     protected function _getFilePath($key, $checkExists = false)
     {
-        return parent::_getFilePath('settings_' . $key, $checkExists);
+        return CONFIG . DS . 'settings_' . $key . 'php';
     }
 }
