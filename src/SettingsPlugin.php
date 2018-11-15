@@ -29,7 +29,7 @@ class SettingsPlugin implements BackendPluginInterface, SettingsInterface, Event
     {
         $event->subject()->addItem([
             'title' => 'Settings',
-            'url' => ['plugin' => 'Settings', 'controller' => 'Settings', 'action' => 'index'],
+            'url' => ['plugin' => 'Settings', 'controller' => 'SettingsManager', 'action' => 'manage'],
             'data-icon' => 'sliders',
             'children' => [
 //                'settings' => [

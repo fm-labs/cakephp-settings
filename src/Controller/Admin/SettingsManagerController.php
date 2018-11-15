@@ -2,6 +2,7 @@
 namespace Settings\Controller\Admin;
 
 use Banana\Banana;
+use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Event\Event;
@@ -119,13 +120,14 @@ class SettingsManagerController extends AppController
             }
         }
 
+        Cache::clear(false, 'settings');
         Configure::write($copy);
         return true;
     }
 
     public function manage($scope = null, $group = null)
     {
-        $scope = ($scope) ?: 'default';
+        $scope = ($scope) ?: (defined('BC_SITE_ID')) ? constant('BC_SITE_ID') : 'default';
         $values = $this->_loadValues($scope);
         $this->settingsManager()->apply($values);
 
@@ -138,7 +140,7 @@ class SettingsManagerController extends AppController
                 $this->Flash->error("Failed to update values");
             } else {
                 $this->Flash->success("Saved!");
-                //$this->redirect(['action' => 'manage', $scope]);
+                $this->redirect(['action' => 'manage', $scope]);
             }
         }
 
