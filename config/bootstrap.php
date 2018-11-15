@@ -25,7 +25,7 @@ if (!\Cake\Log\Log::config('settings')) {
     ]);
 }
 
-Configure::config('settings', new \Settings\Configure\Engine\SettingsConfig());
+Configure::config('settings', new \Settings\Configure\Engine\SettingsConfig(Configure::read('Settings.modelName')));
 //foreach ((array) Configure::read('Settings.autoload') as $scope) {
 //    Configure::load($scope, 'settings');
 //}

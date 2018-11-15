@@ -25,7 +25,7 @@ class SettingsManagerController extends AppController
     /**
      * @var string
      */
-    public $modelClass = 'Settings.Settings';
+    public $modelClass = false;
 
 
     public $actions = [
@@ -47,7 +47,6 @@ class SettingsManagerController extends AppController
             $this->Flash->error("Settings plugin not loaded");
             $this->redirect($this->referer());
         }
-
 
     }
 

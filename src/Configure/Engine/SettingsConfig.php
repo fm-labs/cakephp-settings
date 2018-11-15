@@ -27,6 +27,13 @@ class SettingsConfig implements ConfigEngineInterface
     protected $_extension = '.php';
 
     /**
+     * File prefix.
+     *
+     * @var string
+     */
+    protected $_prefix = 'settings_';
+
+    /**
      * @param string|null $modelClass
      */
     public function __construct($modelClass = null)
@@ -47,7 +54,7 @@ class SettingsConfig implements ConfigEngineInterface
         if (!$settings) {
 
             try {
-                $Table = TableRegistry::get('Settings.Settings');
+                $Table = TableRegistry::get($this->_modelClass);
                 $query = $Table->find('list', ['keyField' => 'key', 'valueField' => 'value'])
                     ->where(['scope' => $key]);
                 $settings = $query->toArray();
@@ -87,6 +94,6 @@ class SettingsConfig implements ConfigEngineInterface
      */
     protected function _getFilePath($key, $checkExists = false)
     {
-        return CONFIG . DS . 'settings_' . $key . 'php';
+        return CONFIG . DS . $this->_prefix . $key . 'php';
     }
 }

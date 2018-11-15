@@ -8,8 +8,6 @@ class SettingsController extends AppController
 {
     use BackendActionsTrait;
 
-    public $modelClass = "Settings.Settings";
-
     public $actions = [
         'index' => 'Backend.Index',
         'add' => 'Backend.Add',
