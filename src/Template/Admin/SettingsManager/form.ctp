@@ -1,6 +1,6 @@
-<?php $this->Breadcrumbs->add(__d('backend','Settings')); ?>
+<?php $this->Breadcrumbs->add(__d('settings','Settings')); ?>
 <?php $this->Toolbar->addLink(
-    __d('backend','Dump {0}', __d('backend','Settings')),
+    __d('settings','Dump {0}', __d('settings','Settings')),
     ['action' => 'dump'],
     ['data-icon' => 'download']
 ) ?>
@@ -16,7 +16,7 @@ $this->Form->addContextProvider('settings_form', function($request, $context) {
 
     <?php echo $this->Form->create($form, ['horizontal' => true]); ?>
     <?php echo $this->Form->allInputs($form->inputs(), ['fieldset' => false] ); ?>
-    <?php echo $this->Form->button(__d('backend','Save')); ?>
+    <?php echo $this->Form->button(__d('settings','Save')); ?>
     <?php echo $this->Form->end(); ?>
 
     <?php debug($form->inputs()); ?>

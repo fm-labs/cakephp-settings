@@ -161,8 +161,8 @@ class SettingsManagerController extends AppController
         $this->set('fields.whitelist', ['id', 'scope', 'key', 'value']);
 
         $this->eventManager()->on('Backend.Action.Index.getActions', function(Event $event) use ($scope) {
-            $event->result[] =  [__d('backend','Edit'), ['action' => 'form', $scope]];
-            $event->result[] =  [__d('backend','Dump'), ['action' => 'dump', $scope]];
+            $event->result[] =  [__d('settings','Edit'), ['action' => 'form', $scope]];
+            $event->result[] =  [__d('settings','Dump'), ['action' => 'dump', $scope]];
         });
         $this->Action->execute();
     }
@@ -211,11 +211,11 @@ class SettingsManagerController extends AppController
         if ($this->request->is('post')) {
             $setting = $this->Settings->patchEntity($setting, $this->request->data);
             if ($this->Settings->save($setting)) {
-                $this->Flash->success(__d('backend', 'The {0} has been saved.', __d('backend', 'setting')));
+                $this->Flash->success(__d('settings', 'The {0} has been saved.', __d('settings', 'setting')));
 
                 return $this->redirect(['action' => 'edit', $setting->id]);
             } else {
-                $this->Flash->error(__d('backend', 'The {0} could not be saved. Please, try again.', __d('backend', 'setting')));
+                $this->Flash->error(__d('settings', 'The {0} could not be saved. Please, try again.', __d('settings', 'setting')));
             }
         }
         $this->set(compact('setting'));
@@ -239,11 +239,11 @@ class SettingsManagerController extends AppController
             $setting = $this->Settings->patchEntity($setting, $this->request->data);
             if ($this->Settings->save($setting)) {
                 //$this->Settings->dump();
-                $this->Flash->success(__d('backend', 'The {0} has been saved.', __d('backend', 'setting')));
+                $this->Flash->success(__d('settings', 'The {0} has been saved.', __d('settings', 'setting')));
 
                 return $this->redirect(['action' => 'index']);
             } else {
-                $this->Flash->error(__d('backend', 'The {0} could not be saved. Please, try again.', __d('backend', 'setting')));
+                $this->Flash->error(__d('settings', 'The {0} could not be saved. Please, try again.', __d('settings', 'setting')));
             }
         }
         $this->set(compact('setting'));
@@ -262,9 +262,9 @@ class SettingsManagerController extends AppController
         $this->request->allowMethod(['post', 'delete']);
         $setting = $this->Settings->get($id);
         if ($this->Settings->delete($setting)) {
-            $this->Flash->success(__d('backend', 'The {0} has been deleted.', __d('backend', 'setting')));
+            $this->Flash->success(__d('settings', 'The {0} has been deleted.', __d('settings', 'setting')));
         } else {
-            $this->Flash->error(__d('backend', 'The {0} could not be deleted. Please, try again.', __d('backend', 'setting')));
+            $this->Flash->error(__d('settings', 'The {0} could not be deleted. Please, try again.', __d('settings', 'setting')));
         }
 
         return $this->redirect(['action' => 'index']);

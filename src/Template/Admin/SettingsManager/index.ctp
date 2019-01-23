@@ -2,7 +2,7 @@
 <div class="settings index">
 
     <p>
-        <?= $this->Html->link(__('Manage settings'), ['action' => 'manage']); ?>
+        <?= $this->Html->link(__d('settings', 'Manage settings'), ['action' => 'manage']); ?>
     </p>
 
     <div class="form">
@@ -13,7 +13,7 @@
 
 
             <?php // $this->Tabs->add($namespace); ?>
-            <h2><?= __d('backend',"{0} settings",$namespace); ?></h2>
+            <h2><?= __d('settings',"{0} settings",$namespace); ?></h2>
             <table class="table">
                 <tr>
                     <th>Key</th>

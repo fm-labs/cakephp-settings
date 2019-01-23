@@ -1,3 +1,5 @@
+<?php $this->assign('title', __d('settings', 'Settings')); ?>
+<?php $this->assign('heading', __d('settings', 'Settings for {0}', $this->get('scope'))); ?>
 <div class="settings index">
 
     <div class="form" style="max-width: 1000px;">
@@ -19,7 +21,7 @@
         <?php endforeach; ?>
 
         <div class="submit">
-            <?= $this->Form->button(__d('backend', 'Update settings')); ?>
+            <?= $this->Form->button(__d('settings', 'Update settings')); ?>
         </div>
         <?= $this->Form->end(); ?>
 

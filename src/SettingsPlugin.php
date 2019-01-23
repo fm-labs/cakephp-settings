@@ -33,12 +33,12 @@ class SettingsPlugin implements BackendPluginInterface, SettingsInterface, Event
             'data-icon' => 'sliders',
             'children' => [
 //                'settings' => [
-//                    'title' => __('Settings Table'),
+//                    'title' => __d('settings', 'Settings Table'),
 //                    'url' => ['plugin' => 'Settings', 'controller' => 'Settings', 'action' => 'index'],
 //                    'data-icon' => 'gears'
 //                ],
 //                'manager' => [
-//                    'title' => __('Manager'),
+//                    'title' => __d('settings', 'Manager'),
 //                    'url' => ['plugin' => 'Settings', 'controller' => 'SettingsManager', 'action' => 'index'],
 //                    'data-icon' => 'gears'
 //                ],
