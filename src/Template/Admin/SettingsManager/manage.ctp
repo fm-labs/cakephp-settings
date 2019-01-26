@@ -9,7 +9,7 @@
         <?php foreach ($result as $namespace => $settings) : ?>
             <?php if ($group && $namespace != $group) continue; ?>
             <div class="box box-solid">
-                <div class="box-heading with-border">
+                <div class="box-header with-border">
                     <?= h($namespace); ?>
                 </div>
                 <div class="box-body">
