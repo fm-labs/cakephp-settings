@@ -126,8 +126,10 @@ class SettingsManagerController extends AppController
 
     public function manage($scope = null, $group = null)
     {
+        //@TODO Remove BC_SITE_ID constant usage
         $scope = ($scope) ?: (defined('BC_SITE_ID')) ? constant('BC_SITE_ID') : 'default';
         $values = $this->_loadValues($scope);
+        //$this->settingsManager()->apply(Configure::read());
         $this->settingsManager()->apply($values);
 
         if ($this->request->is('post')) {

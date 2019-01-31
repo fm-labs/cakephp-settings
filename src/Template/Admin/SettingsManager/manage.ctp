@@ -27,5 +27,5 @@
 
     </div>
 
-    <?php debug($result); ?>
+    <?php debug($manager->getCompiled()); ?>
 </div>
