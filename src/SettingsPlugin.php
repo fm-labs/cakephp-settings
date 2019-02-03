@@ -4,10 +4,12 @@ namespace Settings;
 
 use Backend\Backend;
 use Backend\BackendPluginInterface;
+use Banana\Banana;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\Event\EventManager;
 use Cake\Routing\RouteBuilder;
+use Cake\Utility\Inflector;
 
 class SettingsPlugin implements BackendPluginInterface, SettingsInterface, EventListenerInterface
 {
@@ -27,22 +29,23 @@ class SettingsPlugin implements BackendPluginInterface, SettingsInterface, Event
      */
     public function buildBackendMenu(Event $event)
     {
+        $children = [];
+        foreach(Banana::getInstance()->plugins()->loaded() as $pluginName) {
+            $instance = Banana::getInstance()->plugins()->get($pluginName);
+            if ($instance instanceof SettingsInterface && $pluginName != "Settings") {
+                 $children['plugin_' . $pluginName] = [
+                    'title' => Inflector::humanize($pluginName),
+                    'url' => ['plugin' => 'Settings', 'controller' => 'SettingsManager', 'action' => 'manage', 'plugin' => $pluginName],
+                    'data-icon' => null
+                ];
+            }
+        }
+
         $event->subject()->addItem([
             'title' => 'Settings',
             'url' => ['plugin' => 'Settings', 'controller' => 'SettingsManager', 'action' => 'manage'],
             'data-icon' => 'sliders',
-            'children' => [
-//                'settings' => [
-//                    'title' => __d('settings', 'Settings Table'),
-//                    'url' => ['plugin' => 'Settings', 'controller' => 'Settings', 'action' => 'index'],
-//                    'data-icon' => 'gears'
-//                ],
-//                'manager' => [
-//                    'title' => __d('settings', 'Manager'),
-//                    'url' => ['plugin' => 'Settings', 'controller' => 'SettingsManager', 'action' => 'index'],
-//                    'data-icon' => 'gears'
-//                ],
-            ]
+            'children' => $children
         ]);
     }
     
