@@ -35,7 +35,7 @@ class SettingsPlugin implements BackendPluginInterface, SettingsInterface, Event
             if ($instance instanceof SettingsInterface && $pluginName != "Settings") {
                  $children['plugin_' . $pluginName] = [
                     'title' => Inflector::humanize($pluginName),
-                    'url' => ['plugin' => 'Settings', 'controller' => 'SettingsManager', 'action' => 'manage', 'plugin' => $pluginName],
+                    'url' => ['plugin' => 'Settings', 'controller' => 'SettingsManager', 'action' => 'manage', 'namespace' => $pluginName],
                     'data-icon' => null
                 ];
             }
