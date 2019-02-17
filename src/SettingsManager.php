@@ -33,7 +33,6 @@ class SettingsManager
      */
     protected $_compiled = [];
 
-
     public function describe()
     {
         $schema = $this->buildFormSchema(new Schema());
@@ -49,6 +48,7 @@ class SettingsManager
                 ];
             }
         }
+
         return $result;
     }
 
@@ -89,7 +89,6 @@ class SettingsManager
         */
         foreach ($this->_settings as $namespace => $settings) {
             foreach ($settings as $key => $config) {
-
                 $fieldKey = $namespace . '.' . $key;
                 $config += ['input' => [], 'default' => null, 'type' => null];
 
@@ -117,6 +116,7 @@ class SettingsManager
                 $inputs[$fieldKey] = $input;
             }
         }
+
         return $inputs;
     }
 
@@ -124,7 +124,7 @@ class SettingsManager
     {
 
         if (!$input['type']) {
-            switch($config['type']) {
+            switch ($config['type']) {
                 case "boolean":
                     $input['type'] = "checkbox";
                     $input['val'] = $input['value'];
@@ -157,7 +157,6 @@ class SettingsManager
 
     protected function _mapTypeToInputType($type)
     {
-
     }
 
     /**
@@ -177,9 +176,11 @@ class SettingsManager
             foreach ($key as $_key => $_config) {
                 $this->add($namespace, $_key, $_config);
             }
+
             return $this;
         }
         $this->_settings[$namespace][$key] = $config;
+
         return $this;
     }
 
@@ -229,6 +230,4 @@ class SettingsManager
 
         return $this->_compiled = $compiled;
     }
-
-
 }

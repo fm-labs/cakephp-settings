@@ -52,7 +52,6 @@ class SettingsConfig implements ConfigEngineInterface
     {
         $settings = Cache::read($key, 'settings');
         if (!$settings) {
-
             try {
                 $Table = TableRegistry::get($this->_modelClass);
                 $query = $Table->find('list', ['keyField' => 'key', 'valueField' => 'value'])

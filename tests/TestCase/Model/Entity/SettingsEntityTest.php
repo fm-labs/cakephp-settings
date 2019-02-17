@@ -43,4 +43,4 @@ class SettingsEntityTest extends TestCase
     {
         parent::tearDown();
     }
-} 
+}

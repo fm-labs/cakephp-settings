@@ -111,7 +111,6 @@ class SettingsFormContextTest extends TestCase
     {
         $this->markTestIncomplete('Test field with attributes');
         $this->assertEmpty($this->context->attributes('test_string'));
-
     }
 
     /**

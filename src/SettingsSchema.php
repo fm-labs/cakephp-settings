@@ -12,9 +12,11 @@ class SettingsSchema
             foreach ($key as $_key => $_config) {
                 $this->add($_key, $_config);
             }
+
             return $this;
         }
         $this->_settings[$key] = $config;
+
         return $this;
     }
 }

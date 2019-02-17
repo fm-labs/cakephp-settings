@@ -30,14 +30,14 @@ class SettingsPlugin implements BackendPluginInterface, SettingsInterface, Event
     public function buildBackendMenu(Event $event)
     {
         $children = [];
-        foreach(Banana::getInstance()->plugins()->loaded() as $pluginName) {
+        foreach (Banana::getInstance()->plugins()->loaded() as $pluginName) {
             $instance = Banana::getInstance()->plugins()->get($pluginName);
             if ($instance instanceof SettingsInterface && $pluginName != "Settings") {
                  $children['plugin_' . $pluginName] = [
                     'title' => Inflector::humanize($pluginName),
                     'url' => ['plugin' => 'Settings', 'controller' => 'SettingsManager', 'action' => 'manage', 'namespace' => $pluginName],
                     'data-icon' => null
-                ];
+                 ];
             }
         }
 
@@ -48,7 +48,7 @@ class SettingsPlugin implements BackendPluginInterface, SettingsInterface, Event
             'children' => $children
         ]);
     }
-    
+
     public function buildSettings(SettingsManager $settings)
     {
         $settings->add('Settings', 'autoBackup', [

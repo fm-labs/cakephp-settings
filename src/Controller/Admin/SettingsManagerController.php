@@ -27,7 +27,6 @@ class SettingsManagerController extends AppController
      */
     public $modelClass = false;
 
-
     public $actions = [
         'index2' => 'Backend.Index',
         'edit' => 'Backend.Edit',
@@ -47,7 +46,6 @@ class SettingsManagerController extends AppController
             $this->Flash->error("Settings plugin not loaded");
             $this->redirect($this->referer());
         }
-
     }
 
     public function settingsManager()
@@ -55,7 +53,7 @@ class SettingsManagerController extends AppController
         if (!$this->_settingsManager) {
             $manager = new SettingsManager();
 
-            foreach(Banana::getInstance()->plugins()->loaded() as $pluginName) {
+            foreach (Banana::getInstance()->plugins()->loaded() as $pluginName) {
                 $instance = Banana::getInstance()->plugins()->get($pluginName);
                 if ($instance instanceof SettingsInterface) {
                     $instance->buildSettings($manager);
@@ -96,7 +94,7 @@ class SettingsManagerController extends AppController
 
         $copy = $compiled;
 
-        foreach($settings as $setting) {
+        foreach ($settings as $setting) {
             $key = $setting->key;
             if (isset($compiled[$key])) {
                 $setting->set('value', $compiled[$key]);
@@ -107,6 +105,7 @@ class SettingsManagerController extends AppController
 
             if (!$this->Settings->save($setting)) {
                 Log::error("Failed saving setting for key $key", ['settings']);
+
                 return false;
             }
         }
@@ -115,12 +114,14 @@ class SettingsManagerController extends AppController
             $setting = $this->Settings->newEntity(['key' => $key, 'value' => $val, 'scope' => $scope]);
             if (!$this->Settings->save($setting)) {
                 Log::error("Failed adding setting for key $key", ['settings']);
+
                 return false;
             }
         }
 
         Cache::clear(false, 'settings');
         Configure::write($copy);
+
         return true;
     }
 
@@ -162,9 +163,9 @@ class SettingsManagerController extends AppController
         $scope = ($scope) ?: BC_SITE_ID;
         $this->set('fields.whitelist', ['id', 'scope', 'key', 'value']);
 
-        $this->eventManager()->on('Backend.Action.Index.getActions', function(Event $event) use ($scope) {
-            $event->result[] =  [__d('settings','Edit'), ['action' => 'form', $scope]];
-            $event->result[] =  [__d('settings','Dump'), ['action' => 'dump', $scope]];
+        $this->eventManager()->on('Backend.Action.Index.getActions', function (Event $event) use ($scope) {
+            $event->result[] =  [__d('settings', 'Edit'), ['action' => 'form', $scope]];
+            $event->result[] =  [__d('settings', 'Dump'), ['action' => 'dump', $scope]];
         });
         $this->Action->execute();
     }
