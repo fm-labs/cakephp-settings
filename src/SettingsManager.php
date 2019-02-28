@@ -90,7 +90,7 @@ class SettingsManager
         foreach ($this->_settings as $namespace => $settings) {
             foreach ($settings as $key => $config) {
                 $fieldKey = $namespace . '.' . $key;
-                $config += ['input' => [], 'default' => null, 'type' => null];
+                $config += ['input' => [], 'default' => null, 'type' => null, 'desc' => null];
 
                 $input = $config['input'];
                 unset($config['input']);
@@ -104,11 +104,18 @@ class SettingsManager
                     unset($config['label']);
                 }
 
+                $desc = null;
+                if (isset($config['desc'])) {
+                    $desc = $config['desc'];
+                    unset($config['desc']);
+                }
+
                 $defaultInput = [
                     'type' => null,
                     'label' => $label,
                     'default' => $config['default'],
-                    'value' => ($this->value($fieldKey)) ?: Configure::read($fieldKey)
+                    'value' => ($this->value($fieldKey)) ?: Configure::read($fieldKey),
+                    'help' => $desc
                 ];
                 $input = array_merge($defaultInput, $input);
                 $input = $this->_buildInput($input, $config);
@@ -122,7 +129,6 @@ class SettingsManager
 
     protected function _buildInput(array $input, array $config = [])
     {
-
         if (!$input['type']) {
             switch ($config['type']) {
                 case "boolean":
