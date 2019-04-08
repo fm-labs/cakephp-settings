@@ -6,13 +6,10 @@ use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Event\Event;
-use Cake\Form\Schema;
 use Cake\Log\Log;
-use Cake\Network\Exception\BadRequestException;
 use Cake\Utility\Hash;
 use Settings\Form\SettingsForm;
 use Settings\Model\Table\SettingsTable;
-use Settings\SettingsInterface;
 use Settings\SettingsManager;
 
 /**
@@ -28,7 +25,6 @@ class SettingsManagerController extends AppController
     public $modelClass = false;
 
     public $actions = [
-        'index2' => 'Backend.Index',
         'edit' => 'Backend.Edit',
         'view' => 'Backend.View',
     ];
@@ -38,29 +34,14 @@ class SettingsManagerController extends AppController
      */
     public $_settingsManager;
 
-    public function beforeFilter(Event $event)
-    {
-        parent::beforeFilter($event);
-
-        if (!Plugin::loaded('Settings')) {
-            $this->Flash->error("Settings plugin not loaded");
-            $this->redirect($this->referer());
-        }
-    }
-
+    /**
+     * @return SettingsManager
+     */
     public function settingsManager()
     {
         if (!$this->_settingsManager) {
             $manager = new SettingsManager();
-
-            foreach (Banana::getInstance()->plugins()->loaded() as $pluginName) {
-                $instance = Banana::getInstance()->plugins()->get($pluginName);
-                if ($instance instanceof SettingsInterface) {
-                    $instance->buildSettings($manager);
-                }
-            }
-            $this->eventManager()->dispatch(new Event('Settings.build', $manager));
-
+            $this->eventManager()->dispatch(new Event('Settings.build', $this, ['manager' => $manager]));
             $this->_settingsManager = $manager;
         }
 
@@ -69,6 +50,9 @@ class SettingsManagerController extends AppController
 
     /**
      * Load settings values from persistent storage
+     *
+     * @param string $scope Settings scope
+     * @return array
      */
     protected function _loadValues($scope)
     {
@@ -127,14 +111,11 @@ class SettingsManagerController extends AppController
 
     public function manage($scope = null, $group = null)
     {
-        //@TODO Remove BC_SITE_ID constant usage
-        $scope = ($scope) ?: (defined('BC_SITE_ID')) ? constant('BC_SITE_ID') : 'default';
+        $scope = ($scope) ?: 'global';
         $values = $this->_loadValues($scope);
-        //$this->settingsManager()->apply(Configure::read());
         $this->settingsManager()->apply($values);
 
         if ($this->request->is('post')) {
-            //debug(Hash::flatten($this->request->data()));
             $values = Hash::flatten($this->request->data());
             $this->settingsManager()->apply($values);
             $compiled = $this->_settingsManager->getCompiled();
@@ -152,30 +133,23 @@ class SettingsManagerController extends AppController
         $this->set('result', $this->settingsManager()->describe());
     }
 
+    /**
+     * Index method
+     *
+     * @return void
+     */
     public function index()
     {
         $this->set('manager', $this->settingsManager());
         $this->set('result', $this->settingsManager()->describe());
     }
 
-    public function index2($scope = null)
-    {
-        $scope = ($scope) ?: BC_SITE_ID;
-        $this->set('fields.whitelist', ['id', 'scope', 'key', 'value']);
-
-        $this->eventManager()->on('Backend.Action.Index.getActions', function (Event $event) use ($scope) {
-            $event->result[] =  [__d('settings', 'Edit'), ['action' => 'form', $scope]];
-            $event->result[] =  [__d('settings', 'Dump'), ['action' => 'dump', $scope]];
-        });
-        $this->Action->execute();
-    }
-
     /**
-     * Index method
+     * Form method
      *
      * @return void
      */
-    public function form($scope = 'default')
+    public function form($scope = 'global')
     {
         $settingsForm = new SettingsForm($this->settingsManager());
 

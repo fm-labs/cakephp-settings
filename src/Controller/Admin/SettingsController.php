@@ -2,12 +2,8 @@
 
 namespace Settings\Controller\Admin;
 
-use Backend\Controller\BackendActionsTrait;
-
 class SettingsController extends AppController
 {
-    use BackendActionsTrait;
-
     public $actions = [
         'index' => 'Backend.Index',
         'add' => 'Backend.Add',
