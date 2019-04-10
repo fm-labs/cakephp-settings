@@ -1,10 +1,10 @@
 <?php
+
 namespace Settings\Controller\Admin;
 
 use Banana\Banana;
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
-use Cake\Core\Plugin;
 use Cake\Event\Event;
 use Cake\Log\Log;
 use Cake\Utility\Hash;
@@ -111,7 +111,7 @@ class SettingsManagerController extends AppController
 
     public function manage($scope = null, $group = null)
     {
-        $scope = ($scope) ?: 'global';
+        $scope = ($scope) ?: SETTINGS_SCOPE;
         $values = $this->_loadValues($scope);
         $this->settingsManager()->apply($values);
 
@@ -147,9 +147,10 @@ class SettingsManagerController extends AppController
     /**
      * Form method
      *
+     * @param string $scope Settings scope
      * @return void
      */
-    public function form($scope = 'global')
+    public function form($scope = SETTINGS_SCOPE)
     {
         $settingsForm = new SettingsForm($this->settingsManager());
 
@@ -180,7 +181,7 @@ class SettingsManagerController extends AppController
     /**
      * Add method
      *
-     * @return void Redirects on successful add, renders view otherwise.
+     * @return \Cake\Network\Response|null Redirects on successful add, renders view otherwise.
      */
     public function add()
     {
@@ -204,7 +205,7 @@ class SettingsManagerController extends AppController
      * Edit method
      *
      * @param string|null $id Setting id.
-     * @return void Redirects on successful edit, renders view otherwise.
+     * @return \Cake\Network\Response|null Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
     public function edit($id = null)
@@ -231,7 +232,7 @@ class SettingsManagerController extends AppController
      * Delete method
      *
      * @param string|null $id Setting id.
-     * @return void Redirects to index.
+     * @return \Cake\Network\Response|null Redirects to index.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
     public function delete($id = null)

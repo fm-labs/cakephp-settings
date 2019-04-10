@@ -2,9 +2,8 @@
 
 use Cake\Core\Configure;
 
-if (!defined('SETTINGS')) {
-    define('SETTINGS', CONFIG);
-}
+defined('SETTINGS') || define('SETTINGS', CONFIG);
+defined('SETTINGS_SCOPE') || define('SETTINGS_SCOPE', 'global');
 
 if (!\Cake\Cache\Cache::config('settings')) {
     \Cake\Cache\Cache::config('settings', [
@@ -27,4 +26,4 @@ if (!\Cake\Log\Log::config('settings')) {
 
 Configure::config('settings', new \Settings\Configure\Engine\SettingsConfig(Configure::read('Settings.modelName')));
 Configure::load('default', 'settings');
-Configure::load('global', 'settings');
+Configure::load(SETTINGS_SCOPE, 'settings');
