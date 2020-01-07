@@ -2,23 +2,24 @@
 
 namespace Settings;
 
-use Backend\Backend;
-use Backend\BackendPluginInterface;
-use Banana\Banana;
+use Banana\Application;
+use Banana\Plugin\BasePlugin;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\Event\EventManager;
 use Cake\Routing\RouteBuilder;
 
-class SettingsPlugin implements BackendPluginInterface, EventListenerInterface
+class SettingsPlugin extends BasePlugin implements EventListenerInterface
 {
+    protected $_name = "Settings";
+
     /**
      * @return array
      */
     public function implementedEvents()
     {
         return [
-            'Backend.Sidebar.build' => ['callable' => 'buildBackendMenu', 'priority' => 90]
+            'Backend.Menu.build.admin_system' => ['callable' => 'buildBackendMenu', 'priority' => 90]
         ];
     }
 
@@ -26,10 +27,10 @@ class SettingsPlugin implements BackendPluginInterface, EventListenerInterface
      * @param Event $event The event object
      * @return void
      */
-    public function buildBackendMenu(Event $event)
+    public function buildBackendMenu(Event $event, \Banana\Menu\Menu $menu)
     {
         $children = [];
-        $event->subject()->addItem([
+        $menu->addItem([
             'title' => 'Settings',
             'url' => ['plugin' => 'Settings', 'controller' => 'SettingsManager', 'action' => 'manage'],
             'data-icon' => 'sliders',
@@ -40,17 +41,14 @@ class SettingsPlugin implements BackendPluginInterface, EventListenerInterface
     /**
      * {@inheritDoc}
      */
-    public function backendBootstrap(Backend $backend)
+    public function bootstrap(Application $app)
     {
+        parent::bootstrap($app);
         EventManager::instance()->on($this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function backendRoutes(RouteBuilder $routes)
     {
-        // Admin routes
         $routes->fallbacks('DashedRoute');
     }
 }

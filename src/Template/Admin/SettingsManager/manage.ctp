@@ -6,15 +6,9 @@
 
         <?= $this->Form->create(null, ['horizontal' => true]); ?>
 
-        <?php foreach ($result as $group => $settings) : ?>
-            <?= $this->Form->fieldsetStart($group); ?>
-
-            <?php foreach ($settings as $key => $setting) : ?>
+            <?php foreach ($result as $key => $setting) : ?>
                 <?= $this->Form->input($key, $setting['input']); ?>
             <?php endforeach; ?>
-            <?= $this->Form->fieldsetEnd(); ?>
-
-        <?php endforeach; ?>
 
         <?= $this->Form->submit(__d('settings', 'Update settings')); ?>
         <?= $this->Form->end(); ?>

@@ -53,6 +53,7 @@ class SettingsManager
         $inputs = $this->buildFormInputs();
 
         $result = [];
+        /*
         foreach ($this->_settings as $group => $settings) {
             foreach ($settings['settings'] as $_key => $_setting) {
                 $result[$group][$_key] = [
@@ -60,6 +61,13 @@ class SettingsManager
                     'input' => $inputs[$_key]
                 ];
             }
+        }
+        */
+        foreach ($this->_settings as $_key => $_setting) {
+            $result[$_key] = [
+                'field' => $schema->field($_key),
+                'input' => $inputs[$_key]
+            ];
         }
 
         return $result;
@@ -71,11 +79,17 @@ class SettingsManager
      */
     public function buildFormSchema(Schema $schema)
     {
+        /*
         foreach ($this->_settings as $group => $settings) {
             foreach ($settings['settings'] as $key => $config) {
                 $columnConfig = array_diff_key($config, ['inputType' => null, 'input' => null, 'default' => null]);
                 $schema->addField($key, $columnConfig);
             }
+        }
+        */
+        foreach ($this->_settings as $key => $config) {
+            $columnConfig = array_diff_key($config, ['inputType' => null, 'input' => null, 'default' => null]);
+            $schema->addField($key, $columnConfig);
         }
 
         return $schema;
@@ -122,10 +136,15 @@ class SettingsManager
     public function buildFormInputs()
     {
         $inputs = [];
+        /*
         foreach ($this->_settings as $namespace => $settings) {
             foreach ($settings['settings'] as $key => $config) {
                 $inputs[$key] = $this->_buildFormInput($key, $config);
             }
+        }
+        */
+        foreach ($this->_settings as $key => $config) {
+            $inputs[$key] = $this->_buildFormInput($key, $config);
         }
 
         return $inputs;
@@ -214,6 +233,7 @@ class SettingsManager
      * @param string $group Setting group alias
      * @param array $config Setting group config
      * @return $this
+     * @deprecated Grouping has been deprecated - Use push() method instead
      */
     public function addGroup($group, array $config = [])
     {
@@ -224,9 +244,11 @@ class SettingsManager
             $settings = $config['settings'];
             unset($config['settings']);
         }
+        /*
         if (!isset($this->_settings[$group])) {
             $this->_settings[$group] = $config;
         }
+        */
         $this->add($group, $settings);
 
         return $this;
@@ -237,6 +259,7 @@ class SettingsManager
      * @param string $key Setting key
      * @param array $config Setting schema
      * @return $this
+     * @deprecated Grouping has been deprecated - Use push() method instead
      */
     public function add($group, $key, array $config = [])
     {
@@ -248,13 +271,19 @@ class SettingsManager
             return $this;
         }
 
+        $config['group'] = $group;
+        $this->push($key, $config);
+
+        /*
+        // -- OLD --
         if (!isset($this->_settings[$group])) {
             debug("Warning: Settings group does not exist: $group");
             $this->addGroup($group);
         }
 
         $this->_settings[$group]['settings'][$key] = $config;
-        /*
+
+        // -- OLDER --
         $columnConfig = array_diff_key($config, ['inputType' => null, 'input' => null, 'default' => null]);
         $this->_schema->addField($key, $columnConfig);
 
@@ -269,6 +298,19 @@ class SettingsManager
         */
 
         return $this;
+    }
+
+    public function push($key, $config)
+    {
+        if (is_array($key)) {
+            foreach ($key as $_key => $_config) {
+                $this->push($_key, $_config);
+            }
+
+            return $this;
+        }
+
+        $this->_settings[$key] = $config;
     }
 
     /**
@@ -306,12 +348,19 @@ class SettingsManager
         }
 
         $compiled = [];
+        /*
         foreach ($this->_settings as $group => $settings) {
             foreach ($settings['settings'] as $key => $config) {
                 $value = (isset($this->_values[$key])) ? $this->_values[$key] : null;
 
                 $compiled[$key] = $value;
             }
+        }
+        */
+        foreach ($this->_settings as $key => $config) {
+            $value = (isset($this->_values[$key])) ? $this->_values[$key] : null;
+
+            $compiled[$key] = $value;
         }
 
         return $this->_compiled = $compiled;
