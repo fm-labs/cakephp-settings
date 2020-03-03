@@ -4,15 +4,15 @@ namespace Settings;
 
 use Banana\Application;
 use Banana\Plugin\BasePlugin;
+use Cake\Core\PluginApplicationInterface;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\Event\EventManager;
+use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\RouteBuilder;
 
-class SettingsPlugin extends BasePlugin implements EventListenerInterface
+class Plugin extends BasePlugin implements EventListenerInterface
 {
-    protected $_name = "Settings";
-
     /**
      * @return array
      */
@@ -41,14 +41,17 @@ class SettingsPlugin extends BasePlugin implements EventListenerInterface
     /**
      * {@inheritDoc}
      */
-    public function bootstrap(Application $app)
+    public function bootstrap(PluginApplicationInterface $app)
     {
         parent::bootstrap($app);
+
         EventManager::instance()->on($this);
     }
 
-    public function backendRoutes(RouteBuilder $routes)
+    public function routes($routes)
     {
-        $routes->fallbacks('DashedRoute');
+        $routes->scope('/admin/settings', ['prefix' => 'admin', 'plugin' => 'Settings'], function($routes) {
+            $routes->fallbacks(DashedRoute::class);
+        });
     }
 }
