@@ -14,7 +14,7 @@ debug($grouped->toArray());
         <?= $this->Form->create(null, ['horizontal' => true]); ?>
 
             <?php foreach ($result as $key => $setting) : ?>
-                <?= $this->Form->input($key, $setting['input']); ?>
+                <?= $this->Form->control($key, $setting['input']); ?>
             <?php endforeach; ?>
 
         <?= $this->Form->submit(__d('settings', 'Update settings')); ?>

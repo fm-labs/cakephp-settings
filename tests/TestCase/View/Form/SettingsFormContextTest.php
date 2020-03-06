@@ -47,7 +47,7 @@ class SettingsFormContextTest extends TestCase
     public function testPrimaryKey()
     {
         $this->markTestIncomplete();
-        $this->assertEquals([], $this->context->primaryKey());
+        $this->assertEquals([], $this->context->getPrimaryKey());
     }
 
     /**

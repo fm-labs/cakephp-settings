@@ -44,7 +44,7 @@ class SettingsFormContext implements ContextInterface
      *
      * @return array
      */
-    public function primaryKey()
+    public function getPrimaryKey()
     {
         return [];
     }

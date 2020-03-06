@@ -5,9 +5,9 @@
 <div class="settings form">
     <?= $this->Form->create($setting, ['class' => 'setting']); ?>
     <?php
-    echo $this->Form->input('scope');
-    echo $this->Form->input('key');
-    echo $this->Form->input('value');
+    echo $this->Form->control('scope');
+    echo $this->Form->control('key');
+    echo $this->Form->control('value');
     ?>
     <?= $this->Form->button(__d('settings','Submit')) ?>
     <?= $this->Form->end() ?>
