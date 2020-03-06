@@ -15,7 +15,7 @@ $this->Form->addContextProvider('settings_form', function($request, $context) {
 <div class="settings index">
 
     <?php echo $this->Form->create($form, ['horizontal' => true]); ?>
-    <?php echo $this->Form->allInputs($form->inputs(), ['fieldset' => false] ); ?>
+    <?php echo $this->Form->allControls($form->inputs(), ['fieldset' => false] ); ?>
     <?php echo $this->Form->button(__d('settings','Save')); ?>
     <?php echo $this->Form->end(); ?>
 

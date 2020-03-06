@@ -111,7 +111,7 @@ class SettingsFormContext implements ContextInterface
      */
     public function fieldNames()
     {
-        return $this->_form->schema()->fields();
+        return $this->_form->getSchema()->fields();
     }
 
     /**
@@ -123,7 +123,7 @@ class SettingsFormContext implements ContextInterface
      */
     public function type($field)
     {
-        return $this->_form->schema()->fieldType($field);
+        return $this->_form->getSchema()->fieldType($field);
     }
 
     /**
@@ -134,7 +134,7 @@ class SettingsFormContext implements ContextInterface
      */
     public function attributes($field)
     {
-        return $this->_form->schema()->field($field);
+        return $this->_form->getSchema()->field($field);
     }
 
     /**

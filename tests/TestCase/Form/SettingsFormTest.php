@@ -60,7 +60,7 @@ class SettingsFormTest extends TestCase
     public function testSchemaGetter()
     {
         $this->markTestIncomplete();
-        $this->assertInstanceOf('Cake\Form\Schema', $this->form->schema());
+        $this->assertInstanceOf('Cake\Form\Schema', $this->form->getSchema());
     }
 
     /**
@@ -73,7 +73,7 @@ class SettingsFormTest extends TestCase
         $schema->addField('custom_schema_field', []);
         $this->form->schema($schema);
 
-        $result = $this->form->schema();
+        $result = $this->form->getSchema();
         $this->assertNotNull($result->field('custom_schema_field'));
     }
 
