@@ -5,8 +5,8 @@ use Cake\Core\Configure;
 defined('SETTINGS') || define('SETTINGS', CONFIG);
 defined('SETTINGS_SCOPE') || define('SETTINGS_SCOPE', 'global');
 
-if (!\Cake\Cache\Cache::config('settings')) {
-    \Cake\Cache\Cache::config('settings', [
+if (!\Cake\Cache\Cache::getConfig('settings')) {
+    \Cake\Cache\Cache::setConfig('settings', [
         'className' => 'File',
         'duration' => (Configure::read('debug')) ? '+5 minutes' : '+ 999 days',
         'path' => CACHE,
@@ -14,8 +14,8 @@ if (!\Cake\Cache\Cache::config('settings')) {
     ]);
 }
 
-if (!\Cake\Log\Log::config('settings')) {
-    \Cake\Log\Log::config('settings', [
+if (!\Cake\Log\Log::getConfig('settings')) {
+    \Cake\Log\Log::setConfig('settings', [
         'className' => 'Cake\Log\Engine\FileLog',
         'path' => LOGS,
         'file' => 'settings',

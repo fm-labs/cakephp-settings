@@ -65,6 +65,7 @@ class SettingsManager
         */
         foreach ($this->_settings as $_key => $_setting) {
             $result[$_key] = [
+                'key' => $_key,
                 'field' => $schema->field($_key),
                 'input' => $inputs[$_key]
             ];
@@ -310,6 +311,7 @@ class SettingsManager
             return $this;
         }
 
+        $config['key'] = $key;
         $this->_settings[$key] = $config;
     }
 

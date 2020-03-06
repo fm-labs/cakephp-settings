@@ -2,7 +2,7 @@
 
 namespace Settings\View\Form;
 
-use Cake\Network\Request;
+use Cake\Http\ServerRequest as Request;
 use Cake\View\Form\ContextInterface;
 use Settings\Form\SettingsForm;
 
@@ -22,7 +22,7 @@ class SettingsFormContext implements ContextInterface
     /**
      * Constructor.
      *
-     * @param \Cake\Network\Request $request The request object.
+     * @param \Cake\Http\ServerRequest $request The request object.
      * @param array $context Context info.
      */
     public function __construct(Request $request, array $context)

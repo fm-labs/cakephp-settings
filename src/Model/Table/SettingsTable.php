@@ -24,9 +24,9 @@ class SettingsTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('settings');
-        $this->displayField('key');
-        $this->primaryKey('id');
+        $this->setTable('settings');
+        $this->setDisplayField('key');
+        $this->setPrimaryKey('id');
         $this->addBehavior('Timestamp');
     }
 
@@ -59,8 +59,8 @@ class SettingsTable extends Table
         }
 
         $setting = $this->patchEntity($setting, compact('key', 'value', 'scope'));
-        if ($setting->errors()) {
-            debug($setting->errors());
+        if ($setting->getErrors()) {
+            debug($setting->getErrors());
 
             return $setting;
         }

@@ -1,6 +1,13 @@
 <?php $this->assign('title', __d('settings', 'Settings')); ?>
 <?php $this->assign('heading', __d('settings', 'Settings')); ?>
+<?php
+$settings = new \Cake\Collection\Collection($manager->getSettings());
+debug($settings->toArray());
+$grouped = $settings->groupBy('group');
+debug($grouped->toArray());
+?>
 <div class="settings index">
+
 
     <div class="form" style="max-width: 1000px;">
 

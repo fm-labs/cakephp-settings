@@ -41,7 +41,7 @@ class SettingsManagerController extends AppController
     {
         if (!$this->_settingsManager) {
             $manager = new SettingsManager();
-            $this->eventManager()->dispatch(new Event('Settings.build', $this, ['manager' => $manager]));
+            $this->getEventManager()->dispatch(new Event('Settings.build', null, ['manager' => $manager]));
             $this->_settingsManager = $manager;
         }
 
@@ -181,7 +181,7 @@ class SettingsManagerController extends AppController
     /**
      * Add method
      *
-     * @return \Cake\Network\Response|null Redirects on successful add, renders view otherwise.
+     * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
      */
     public function add()
     {
@@ -205,8 +205,8 @@ class SettingsManagerController extends AppController
      * Edit method
      *
      * @param string|null $id Setting id.
-     * @return \Cake\Network\Response|null Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function edit($id = null)
     {
@@ -232,8 +232,8 @@ class SettingsManagerController extends AppController
      * Delete method
      *
      * @param string|null $id Setting id.
-     * @return \Cake\Network\Response|null Redirects to index.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|null Redirects to index.
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function delete($id = null)
     {
