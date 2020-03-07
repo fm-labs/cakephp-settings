@@ -44,7 +44,7 @@ class SettingsFormContext implements ContextInterface
      *
      * @return array
      */
-    public function getPrimaryKey()
+    public function primaryKey()
     {
         return [];
     }
@@ -158,5 +158,16 @@ class SettingsFormContext implements ContextInterface
     public function error($field)
     {
         return [];
+    }
+
+
+    public function getRequiredMessage($field)
+    {
+        return null;
+    }
+
+    public function getMaxLength($field)
+    {
+        return null;
     }
 }

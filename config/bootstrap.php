@@ -25,5 +25,5 @@ if (!\Cake\Log\Log::getConfig('settings')) {
 }
 
 Configure::config('settings', new \Settings\Configure\Engine\SettingsConfig(Configure::read('Settings.modelName')));
-Configure::load('default', 'settings');
-Configure::load(SETTINGS_SCOPE, 'settings');
+//Configure::load('default', 'settings');
+//Configure::load(SETTINGS_SCOPE, 'settings');

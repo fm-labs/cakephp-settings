@@ -27,7 +27,7 @@ class SettingsFormContextTest extends TestCase
     {
         parent::setUp();
 
-        $request = $this->getMockBuilder('Cake\Http\Request')->getMock();
+        $request = $this->getMockBuilder('Cake\Http\ServerRequest')->getMock();
         $form = new SettingsForm(new TestSettingsManager());
 
         $this->context = new SettingsFormContext($request, ['entity' => $form]);
