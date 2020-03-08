@@ -44,7 +44,7 @@ class SettingsFixture extends TestFixture
             'id' => 1,
             'scope' => 'default',
             'key' => 'test_key_1',
-            'value' => 'Foo'
+            'value' => 'Foo',
         ],
     ];
 }

@@ -19,7 +19,7 @@ class Plugin extends BasePlugin implements EventListenerInterface
     public function implementedEvents()
     {
         return [
-            'Backend.Menu.build.admin_system' => ['callable' => 'buildBackendMenu', 'priority' => 90]
+            'Backend.Menu.build.admin_system' => ['callable' => 'buildBackendMenu', 'priority' => 90],
         ];
     }
 
@@ -34,7 +34,7 @@ class Plugin extends BasePlugin implements EventListenerInterface
             'title' => 'Settings',
             'url' => ['plugin' => 'Settings', 'controller' => 'SettingsManager', 'action' => 'manage'],
             'data-icon' => 'sliders',
-            'children' => $children
+            'children' => $children,
         ]);
     }
 
@@ -50,7 +50,7 @@ class Plugin extends BasePlugin implements EventListenerInterface
 
     public function routes($routes)
     {
-        $routes->scope('/admin/settings', ['prefix' => 'admin', 'plugin' => 'Settings'], function($routes) {
+        $routes->scope('/admin/settings', ['prefix' => 'admin', 'plugin' => 'Settings'], function ($routes) {
             $routes->fallbacks(DashedRoute::class);
         });
     }

@@ -211,7 +211,7 @@ class SettingsManagerController extends AppController
     public function edit($id = null)
     {
         $setting = $this->Settings->get($id, [
-            'contain' => []
+            'contain' => [],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $setting = $this->Settings->patchEntity($setting, $this->request->data);

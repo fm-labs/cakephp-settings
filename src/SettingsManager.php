@@ -67,7 +67,7 @@ class SettingsManager
             $result[$_key] = [
                 'key' => $_key,
                 'field' => $schema->field($_key),
-                'input' => $inputs[$_key]
+                'input' => $inputs[$_key],
             ];
         }
 
@@ -123,7 +123,7 @@ class SettingsManager
             'label' => $label,
             'default' => $config['default'],
             'value' => $this->value($key), //($this->value($key)) ?: Configure::read($key),
-            'help' => $desc
+            'help' => $desc,
         ];
         $input = array_merge($defaultInput, $input);
         $input = $this->_buildInput($input, $config);

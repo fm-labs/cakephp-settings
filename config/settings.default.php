@@ -1,4 +1,4 @@
 <?php
 return [
-    'Settings.modelName' => null // Default: 'Settings.Settings'
+    'Settings.modelName' => null, // Default: 'Settings.Settings'
 ];

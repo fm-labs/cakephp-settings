@@ -28,7 +28,7 @@ class SettingsEntityTest extends TestCase
         $this->Setting = new Setting([
             'scope' => 'test',
             'key' => 'foo',
-            'value' => 'bar'
+            'value' => 'bar',
         ]);
 
         $this->assertEquals('test.foo', $this->Setting->scoped_key);

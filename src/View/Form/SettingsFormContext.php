@@ -160,7 +160,6 @@ class SettingsFormContext implements ContextInterface
         return [];
     }
 
-
     public function getRequiredMessage($field)
     {
         return null;

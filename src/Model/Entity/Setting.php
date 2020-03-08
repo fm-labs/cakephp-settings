@@ -20,7 +20,7 @@ class Setting extends Entity
         'scope' => true,
         'key' => true,
         'value' => true,
-        '*' => false
+        '*' => false,
     ];
 
     /**
@@ -29,7 +29,7 @@ class Setting extends Entity
     protected $_virtual = [
         'scoped_key',
         'default',
-        'actual'
+        'actual',
     ];
 
     /**

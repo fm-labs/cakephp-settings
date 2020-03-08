@@ -44,7 +44,7 @@ class SettingsManager
                 $fieldKey = $namespace . '.' . $key;
                 $result[$namespace][$key] = [
                     'field' => $schema->field($fieldKey),
-                    'input' => $inputs[$fieldKey]
+                    'input' => $inputs[$fieldKey],
                 ];
             }
         }
@@ -115,7 +115,7 @@ class SettingsManager
                     'label' => $label,
                     'default' => $config['default'],
                     'value' => ($this->value($fieldKey)) ?: Configure::read($fieldKey),
-                    'help' => $desc
+                    'help' => $desc,
                 ];
                 $input = array_merge($defaultInput, $input);
                 $input = $this->_buildInput($input, $config);
@@ -241,7 +241,7 @@ class SettingsManager
     {
         return [
             'settings' => $this->getSettings(),
-            'compiled'=> $this->getCompiled()
+            'compiled' => $this->getCompiled(),
         ];
     }
 }

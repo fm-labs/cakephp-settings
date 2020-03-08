@@ -10,7 +10,7 @@ if (!\Cake\Cache\Cache::getConfig('settings')) {
         'className' => 'File',
         'duration' => (Configure::read('debug')) ? '+5 minutes' : '+ 999 days',
         'path' => CACHE,
-        'prefix' => 'settings_'
+        'prefix' => 'settings_',
     ]);
 }
 
@@ -20,7 +20,7 @@ if (!\Cake\Log\Log::getConfig('settings')) {
         'path' => LOGS,
         'file' => 'settings',
         //'levels' => ['notice', 'info', 'debug'],
-        'scopes' => ['settings']
+        'scopes' => ['settings'],
     ]);
 }
 

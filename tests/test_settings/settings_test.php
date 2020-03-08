@@ -1,4 +1,4 @@
 <?php
 return [
-    'test.foo' => 'Bar'
+    'test.foo' => 'Bar',
 ];

@@ -3,7 +3,6 @@ namespace Settings\Test\TestCase\Model\Table;
 
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use Settings\Model\Table\SettingsTable;
 
 /**
  * Settings\Model\Table\SettingsTable Test Case
@@ -24,7 +23,7 @@ class SettingsTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.Settings.Settings'
+        'plugin.Settings.Settings',
     ];
 
     /**
@@ -35,7 +34,7 @@ class SettingsTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::exists('Settings')
+        $config = TableRegistry::getTableLocator()->exists('Settings')
             ? [] : ['className' => 'Settings\Model\Table\SettingsTable'];
         $this->Settings = TableRegistry::getTableLocator()->get('Settings', $config);
     }

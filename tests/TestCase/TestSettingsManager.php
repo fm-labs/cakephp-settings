@@ -29,15 +29,15 @@ class TestSettingsManager extends SettingsManager
             'test' => [
                 'test_string' => [
                     'type' => 'string',
-                    'inputType' => 'text'
+                    'inputType' => 'text',
                 ],
                 'test_int' => [
-                    'type' => 'int'
+                    'type' => 'int',
                 ],
                 'test_bool' => [
-                    'type' => 'boolean'
+                    'type' => 'boolean',
                 ],
-            ]
+            ],
         ];
     }
 
@@ -49,7 +49,7 @@ class TestSettingsManager extends SettingsManager
         $this->_values = [
             'test_string' => 'Some Text',
             'test_int' => 3,
-            'test_bool' => true
+            'test_bool' => true,
         ];
     }
 }
