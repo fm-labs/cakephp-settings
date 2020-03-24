@@ -2,14 +2,19 @@
 
 namespace Settings;
 
-use Banana\Application;
+use Banana\Menu\Menu;
 use Banana\Plugin\BasePlugin;
 use Cake\Core\PluginApplicationInterface;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\Event\EventManager;
 use Cake\Routing\Route\DashedRoute;
-use Cake\Routing\RouteBuilder;
+use Cake\Core\Configure;
+use Settings\Configure\Engine\SettingsConfig;
+
+//@TODO Get rid of SETTINGS_* constants
+defined('SETTINGS') || define('SETTINGS', CONFIG);
+defined('SETTINGS_SCOPE') || define('SETTINGS_SCOPE', 'global');
 
 class Plugin extends BasePlugin implements EventListenerInterface
 {
@@ -25,9 +30,9 @@ class Plugin extends BasePlugin implements EventListenerInterface
 
     /**
      * @param Event $event The event object
-     * @return void
+     * @param Menu $menu
      */
-    public function buildBackendMenu(Event $event, \Banana\Menu\Menu $menu)
+    public function buildBackendMenu(Event $event, Menu $menu)
     {
         $children = [];
         $menu->addItem([
@@ -43,7 +48,29 @@ class Plugin extends BasePlugin implements EventListenerInterface
      */
     public function bootstrap(PluginApplicationInterface $app)
     {
-        parent::bootstrap($app);
+
+        if (!\Cake\Cache\Cache::getConfig('settings')) {
+            \Cake\Cache\Cache::setConfig('settings', [
+                'className' => 'File',
+                'duration' => (Configure::read('debug')) ? '+5 minutes' : '+ 999 days',
+                'path' => CACHE,
+                'prefix' => 'settings_',
+            ]);
+        }
+
+        if (!\Cake\Log\Log::getConfig('settings')) {
+            \Cake\Log\Log::setConfig('settings', [
+                'className' => 'Cake\Log\Engine\FileLog',
+                'path' => LOGS,
+                'file' => 'settings',
+                //'levels' => ['notice', 'info', 'debug'],
+                'scopes' => ['settings'],
+            ]);
+        }
+
+        Configure::config('settings', new SettingsConfig(Configure::read('Settings.modelName')));
+        Configure::load('default', 'settings');
+        Configure::load(SETTINGS_SCOPE, 'settings');
 
         EventManager::instance()->on($this);
     }
@@ -51,7 +78,13 @@ class Plugin extends BasePlugin implements EventListenerInterface
     public function routes($routes)
     {
         $routes->scope('/admin/settings', ['prefix' => 'admin', 'plugin' => 'Settings'], function ($routes) {
+            $routes->connect('/manage/*', ['controller' => 'SettingsManager', 'action' => 'manage'], ['_name' => 'settings:manage']);
             $routes->fallbacks(DashedRoute::class);
         });
+    }
+
+    public function getConfigurationUrl()
+    {
+        return ['_name' => 'settings:manage', $this->getName()];
     }
 }

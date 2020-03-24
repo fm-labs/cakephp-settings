@@ -3,8 +3,11 @@
 namespace Settings\Form;
 
 use Cake\Core\Configure;
+use Cake\Event\EventManager;
 use Cake\Form\Form;
 use Cake\Form\Schema;
+use Cake\Utility\Inflector;
+use Cake\Utility\Text;
 use Settings\SettingsManager;
 
 /**
@@ -20,28 +23,22 @@ class SettingsForm extends Form
     protected $_manager;
 
     /**
-     * @var array
+     * @param EventManager $eventManager
      */
-    protected $_inputs = [];
-
-    /**
-     * @param SettingsManager|null $manager
-     */
-    public function __construct(SettingsManager $manager = null)
+    public function __construct(EventManager $eventManager = null)
     {
-        $this->manager($manager);
+        parent::__construct($eventManager);
     }
 
-    /**
-     * @param SettingsManager $manager
-     * @return SettingsManager
-     */
-    public function manager(SettingsManager $manager = null)
+    public function setSettingsManager(SettingsManager $manager)
     {
-        if ($manager !== null) {
-            $this->_manager = $manager;
-        }
+        $this->_manager = $manager;
 
+        return $this;
+    }
+
+    public function getSettingsManager()
+    {
         if (!$this->_manager) {
             $this->_manager = new SettingsManager();
         }
@@ -64,24 +61,130 @@ class SettingsForm extends Form
      */
     protected function _buildSchema(Schema $schema)
     {
-        return $this->manager()->buildFormSchema($schema);
+        foreach ($this->getSettingsManager()->getSettings() as $key => $config) {
+            $columnConfig = array_diff_key($config, ['inputType' => null, 'input' => null, 'default' => null]);
+            $schema->addField($key, $columnConfig);
+        }
+
+        return $schema;
     }
 
     /**
      * @param array $inputs
      * @return array
+     * @deprecated Use getInputs() instead.
      */
-    public function inputs($inputs = [])
+    public function inputs()
     {
-        if (!empty($inputs)) {
-            return $this->_inputs = $inputs;
+        return $this->getInputs();
+    }
+
+    public function getInputs($subset = null)
+    {
+        $settings = $this->getSettingsManager()->getSettings();
+        if ($subset !== null) {
+            if (is_string($subset)) {
+                $settings = array_filter($settings, function($config) use ($subset) {
+                    return $config['scope'] == $subset;
+                });
+            } elseif (is_array($subset)) {
+                $settings = array_filter($settings, function ($key) use ($subset) {
+                    return in_array($key, $subset);
+                }, ARRAY_FILTER_USE_KEY);
+            }
         }
 
-        if (empty($this->_inputs)) {
-            $this->_inputs = $this->manager()->buildFormInputs();
+        $inputs = [];
+        foreach ($settings as $key => $config) {
+            $inputs[$key] = $this->_buildFormInput($key, $config);
         }
 
-        return $this->_inputs;
+        return $inputs;
+    }
+
+    protected function _buildFormInput($key, array $config = [])
+    {
+        $config += ['input' => [], 'default' => null, 'type' => null, 'desc' => null, 'label' => null];
+
+        $input = $config['input'];
+        unset($config['input']);
+        if (is_string($input)) {
+            $input = ['label' => $input];
+        }
+
+        $label = Inflector::humanize(Text::slug($key, ' '));
+        if (isset($config['label'])) {
+            $label = $config['label'];
+            unset($config['label']);
+        }
+
+        $desc = null;
+        if (isset($config['desc'])) {
+            $desc = $config['desc'];
+            unset($config['desc']);
+        }
+        if (isset($config['help'])) {
+            $desc = $config['help'];
+            unset($config['help']);
+        }
+
+        $defaultInput = [
+            'type' => null,
+            'label' => $label,
+            'default' => $config['default'],
+            'value' => $this->value($key), //($this->value($key)) ?: Configure::read($key),
+            'help' => $desc,
+        ];
+        $input = array_merge($defaultInput, $input);
+        $input = $this->_buildInput($input, $config);
+
+        return $input;
+    }
+
+    /**
+     * @param array $input Input schema
+     * @param array $config Input config
+     * @return array Input schema
+     */
+    protected function _buildInput(array $input, array $config = [])
+    {
+        if (!$input['type']) {
+            switch ($config['type']) {
+                case "boolean":
+                    $input['type'] = "checkbox";
+                    $input['val'] = $input['value'];
+                    $input['value'] = 1;
+                    break;
+
+                case "text":
+                case "html":
+                    $input['type'] = "textarea";
+                    break;
+
+                case "integer":
+                case "double":
+                case "decimal":
+                    $input['type'] = "numeric";
+                    break;
+
+                case "string":
+                    $input['type'] = "text";
+                    break;
+
+                default:
+                    $input['type'] = $config['type'];
+                    break;
+            }
+        }
+
+        if (isset($input['options'])) {
+            $input['type'] = 'select';
+        }
+        if (isset($input['options']) && is_callable($input['options'])) {
+            $input['options'] = call_user_func($input['options'], $this->getSettingsManager());
+        }
+
+        return $input;
     }
 
     /**
@@ -90,7 +193,7 @@ class SettingsForm extends Form
      */
     public function value($key)
     {
-        $value = $this->manager()->value($key);
+        $value = $this->getSettingsManager()->value($key);
         if ($value === null && Configure::check($key)) {
             $value = Configure::read($key);
         }
@@ -104,6 +207,6 @@ class SettingsForm extends Form
      */
     public function execute(array $data = [])
     {
-        return $this->manager()->apply($data);
+        return $this->getSettingsManager()->apply($data);
     }
 }

@@ -3,12 +3,8 @@
 namespace Settings;
 
 use Cake\Core\Configure;
-//use Cake\Core\Configure\FileConfigTrait;
 use Cake\Core\Plugin;
-use Cake\Form\Schema;
 use Cake\Utility\Hash;
-use Cake\Utility\Inflector;
-use Cake\Utility\Text;
 
 /**
  * Class SettingsManager
@@ -16,6 +12,8 @@ use Cake\Utility\Text;
  */
 class SettingsManager
 {
+    protected static $_builders = [];
+
     /**
      * @var array
      */
@@ -36,158 +34,16 @@ class SettingsManager
      */
     protected $_compiled = [];
 
+    public static function register($scope, callable $settingsBuilder)
+    {
+        self::$_builders[$scope] = $settingsBuilder;
+    }
+
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->_schema = new Schema();
-    }
-
-    /**
-     * @return array
-     */
-    public function describe()
-    {
-        $schema = $this->buildFormSchema($this->_schema);
-        $inputs = $this->buildFormInputs();
-
-        $result = [];
-        /*
-        foreach ($this->_settings as $group => $settings) {
-            foreach ($settings['settings'] as $_key => $_setting) {
-                $result[$group][$_key] = [
-                    'field' => $schema->field($_key),
-                    'input' => $inputs[$_key]
-                ];
-            }
-        }
-        */
-        foreach ($this->_settings as $_key => $_setting) {
-            $result[$_key] = [
-                'key' => $_key,
-                'field' => $schema->field($_key),
-                'input' => $inputs[$_key],
-            ];
-        }
-
-        return $result;
-    }
-
-    /**
-     * @param Schema $schema Table schema
-     * @return Schema
-     */
-    public function buildFormSchema(Schema $schema)
-    {
-        /*
-        foreach ($this->_settings as $group => $settings) {
-            foreach ($settings['settings'] as $key => $config) {
-                $columnConfig = array_diff_key($config, ['inputType' => null, 'input' => null, 'default' => null]);
-                $schema->addField($key, $columnConfig);
-            }
-        }
-        */
-        foreach ($this->_settings as $key => $config) {
-            $columnConfig = array_diff_key($config, ['inputType' => null, 'input' => null, 'default' => null]);
-            $schema->addField($key, $columnConfig);
-        }
-
-        return $schema;
-    }
-
-    protected function _buildFormInput($key, array $config = [])
-    {
-        $config += ['input' => [], 'default' => null, 'type' => null, 'desc' => null];
-
-        $input = $config['input'];
-        unset($config['input']);
-        if (is_string($input)) {
-            $input = ['type' => $input];
-        }
-
-        $label = Inflector::humanize(Text::slug($key, ' '));
-        if (isset($config['label'])) {
-            $label = $config['label'];
-            unset($config['label']);
-        }
-
-        $desc = null;
-        if (isset($config['desc'])) {
-            $desc = $config['desc'];
-            unset($config['desc']);
-        }
-
-        $defaultInput = [
-            'type' => null,
-            'label' => $label,
-            'default' => $config['default'],
-            'value' => $this->value($key), //($this->value($key)) ?: Configure::read($key),
-            'help' => $desc,
-        ];
-        $input = array_merge($defaultInput, $input);
-        $input = $this->_buildInput($input, $config);
-
-        return $input;
-    }
-
-    /**
-     * @return array
-     */
-    public function buildFormInputs()
-    {
-        $inputs = [];
-        /*
-        foreach ($this->_settings as $namespace => $settings) {
-            foreach ($settings['settings'] as $key => $config) {
-                $inputs[$key] = $this->_buildFormInput($key, $config);
-            }
-        }
-        */
-        foreach ($this->_settings as $key => $config) {
-            $inputs[$key] = $this->_buildFormInput($key, $config);
-        }
-
-        return $inputs;
-    }
-
-    /**
-     * @param array $input Input schema
-     * @param array $config Input config
-     * @return array Input schema
-     */
-    protected function _buildInput(array $input, array $config = [])
-    {
-        if (!$input['type']) {
-            switch ($config['type']) {
-                case "boolean":
-                    $input['type'] = "checkbox";
-                    $input['val'] = $input['value'];
-                    $input['value'] = 1;
-                    break;
-
-                case "text":
-                case "html":
-                    $input['type'] = "textarea";
-                    break;
-
-                case "integer":
-                case "double":
-                case "decimal":
-                    $input['type'] = "numeric";
-                    break;
-
-                case "string":
-                    $input['type'] = "text";
-                    break;
-
-                default:
-                    $input['type'] = $config['type'];
-                    break;
-            }
-        }
-
-        return $input;
     }
 
     /**
@@ -272,31 +128,14 @@ class SettingsManager
             return $this;
         }
 
-        $config['group'] = $group;
-        $this->push($key, $config);
-
-        /*
-        // -- OLD --
-        if (!isset($this->_settings[$group])) {
-            debug("Warning: Settings group does not exist: $group");
-            $this->addGroup($group);
+        $scope = $group;
+        if (strpos($group, ".")) {
+            list($scope,) = pluginSplit($group);
         }
 
-        $this->_settings[$group]['settings'][$key] = $config;
-
-        // -- OLDER --
-        $columnConfig = array_diff_key($config, ['inputType' => null, 'input' => null, 'default' => null]);
-        $this->_schema->addField($key, $columnConfig);
-
-        $input = $this->_buildFormInput($key, $config);
-
-        $setting = [
-            'field' => $this->_schema->field($key),
-            'input' => $input
-        ];
-
-        $this->_settings[$group]['settings'][$key] = $setting;
-        */
+        $config['group'] = $group;
+        $config['scope'] = $scope;
+        $this->push($key, $config);
 
         return $this;
     }
@@ -366,5 +205,13 @@ class SettingsManager
         }
 
         return $this->_compiled = $compiled;
+    }
+
+    public function __debugInfo()
+    {
+        return [
+            'settings' => $this->_settings,
+            'compiled' => $this->getCompiled()
+        ];
     }
 }

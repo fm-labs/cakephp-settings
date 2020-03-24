@@ -4,7 +4,9 @@ namespace Settings\Controller\Admin;
 
 use Banana\Banana;
 use Cake\Cache\Cache;
+use Cake\Core\App;
 use Cake\Core\Configure;
+use Cake\Core\Plugin;
 use Cake\Event\Event;
 use Cake\Log\Log;
 use Cake\Utility\Hash;
@@ -71,22 +73,25 @@ class SettingsManagerController extends AppController
 
     protected function _saveValues($scope, $compiled)
     {
+        $values = $compiled;
+
+        // update existing
         $settings = $this->Settings
             ->find()
             ->where(['Settings.scope' => $scope])
             ->all();
 
-        $copy = $compiled;
 
+        //@TODO Use database transaction to save settings
+        $this->Settings->getConnection()->begin();
         foreach ($settings as $setting) {
             $key = $setting->key;
-            if (isset($compiled[$key])) {
-                $setting->set('value', $compiled[$key]);
-                unset($compiled[$key]);
-            } else {
-                $setting->set('value', null);
+            $value = $values[$key] ?? null;
+            unset($values[$key]);
+            if ($value == $setting->value) {
+                continue;
             }
-
+            $setting->set('value', $value);
             if (!$this->Settings->save($setting)) {
                 Log::error("Failed saving setting for key $key", ['settings']);
 
@@ -94,43 +99,63 @@ class SettingsManagerController extends AppController
             }
         }
 
-        foreach ($compiled as $key => $val) {
-            $setting = $this->Settings->newEntity(['key' => $key, 'value' => $val, 'scope' => $scope]);
+        // add new
+        foreach ($this->settingsManager()->getSettings() as $key => $config) {
+            if ($config['scope'] !== $scope || !array_key_exists($key, $values)) {
+                continue;
+            }
+            $setting = $this->Settings->newEntity(['key' => $key, 'value' => $values[$key], 'scope' => $scope]);
             if (!$this->Settings->save($setting)) {
                 Log::error("Failed adding setting for key $key", ['settings']);
 
                 return false;
             }
         }
+        $this->Settings->getConnection()->commit();
 
         Cache::clear(false, 'settings');
-        Configure::write($copy);
+        Configure::write($compiled);
 
         return true;
     }
 
-    public function manage($scope = null, $group = null)
+    public function manage($scope = SETTINGS_SCOPE)
     {
-        $scope = ($scope) ?: SETTINGS_SCOPE;
         $values = $this->_loadValues($scope);
         $this->settingsManager()->apply($values);
 
-        if ($this->request->is('post')) {
-            $values = Hash::flatten($this->request->data());
+        if ($this->request->is(['post', 'put'])) {
+            $values = Hash::flatten($this->request->getData());
             $this->settingsManager()->apply($values);
             $compiled = $this->_settingsManager->getCompiled();
             if (!$this->_saveValues($scope, $compiled)) {
                 $this->Flash->error("Failed to update values");
             } else {
                 $this->Flash->success("Saved!");
-                $this->redirect(['action' => 'manage', $scope]);
+                //$this->redirect(['action' => 'manage', $scope]);
             }
         }
 
         $this->set('scope', $scope);
-        $this->set('group', $group);
-        $this->set('manager', $this->settingsManager());
-        $this->set('result', $this->settingsManager()->describe());
+
+        $form = new SettingsForm();
+        $form->setSettingsManager($this->settingsManager());
+        $this->set('form', $form);
+
+
+        $templateFile = sprintf(
+            "%ssrc/Template/%s/%s.ctp",
+            (Plugin::loaded($scope)) ? Plugin::path($scope) : App::path('Template')[0],
+            'Admin/Settings',
+            'index'
+        );
+        if (file_exists($templateFile)) {
+            //debug($templateFile);
+            $this->viewBuilder()
+                //->setPlugin($scope)
+                ->setTemplatePath('Admin/Settings')
+                ->setTemplate($scope.'.index');
+        }
     }
 
     /**
@@ -149,14 +174,13 @@ class SettingsManagerController extends AppController
      *
      * @param string $scope Settings scope
      * @return void
-     */
     public function form($scope = SETTINGS_SCOPE)
     {
         $settingsForm = new SettingsForm($this->settingsManager());
 
         if ($this->request->is(['put', 'post'])) {
             // apply
-            $settingsForm->execute($this->request->data);
+            $settingsForm->execute($this->request->getData());
 
             // compile
             $compiled = $settingsForm->manager()->getCompiled();
@@ -177,6 +201,7 @@ class SettingsManagerController extends AppController
         $this->set('form', $settingsForm);
         $this->set('_serialize', ['settings']);
     }
+     */
 
     /**
      * Add method
@@ -187,7 +212,7 @@ class SettingsManagerController extends AppController
     {
         $setting = $this->Settings->newEntity();
         if ($this->request->is('post')) {
-            $setting = $this->Settings->patchEntity($setting, $this->request->data);
+            $setting = $this->Settings->patchEntity($setting, $this->request->getData());
             if ($this->Settings->save($setting)) {
                 $this->Flash->success(__d('settings', 'The {0} has been saved.', __d('settings', 'setting')));
 
@@ -214,7 +239,7 @@ class SettingsManagerController extends AppController
             'contain' => [],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $setting = $this->Settings->patchEntity($setting, $this->request->data);
+            $setting = $this->Settings->patchEntity($setting, $this->request->getData());
             if ($this->Settings->save($setting)) {
                 //$this->Settings->dump();
                 $this->Flash->success(__d('settings', 'The {0} has been saved.', __d('settings', 'setting')));
