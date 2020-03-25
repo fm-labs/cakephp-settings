@@ -12,16 +12,12 @@ use Cake\Routing\Route\DashedRoute;
 use Cake\Core\Configure;
 use Settings\Configure\Engine\SettingsConfig;
 
-//@TODO Get rid of SETTINGS_* constants
-defined('SETTINGS') || define('SETTINGS', CONFIG);
-defined('SETTINGS_SCOPE') || define('SETTINGS_SCOPE', 'global');
-
 class Plugin extends BasePlugin implements EventListenerInterface
 {
     /**
      * @return array
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         return [
             'Backend.Menu.build.admin_system' => ['callable' => 'buildBackendMenu', 'priority' => 90],
@@ -46,7 +42,7 @@ class Plugin extends BasePlugin implements EventListenerInterface
     /**
      * {@inheritDoc}
      */
-    public function bootstrap(PluginApplicationInterface $app)
+    public function bootstrap(PluginApplicationInterface $app): void
     {
 
         if (!\Cake\Cache\Cache::getConfig('settings')) {
@@ -75,7 +71,7 @@ class Plugin extends BasePlugin implements EventListenerInterface
         EventManager::instance()->on($this);
     }
 
-    public function routes($routes)
+    public function routes(\Cake\Routing\RouteBuilder $routes): void
     {
         $routes->scope('/admin/settings', ['prefix' => 'admin', 'plugin' => 'Settings'], function ($routes) {
             $routes->connect('/manage/*', ['controller' => 'SettingsManager', 'action' => 'manage'], ['_name' => 'settings:manage']);

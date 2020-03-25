@@ -48,7 +48,7 @@ class SettingsConfig implements ConfigEngineInterface
      * @return array
      * @throws \Exception
      */
-    public function read($key)
+    public function read(string $key): array
     {
         $settings = Cache::read($key, 'settings');
         if (!$settings) {
@@ -77,7 +77,7 @@ class SettingsConfig implements ConfigEngineInterface
      * @param array $data Data to dump.
      * @return int Bytes saved.
      */
-    public function dump($key, array $data)
+    public function dump(string $key, array $data): bool
     {
         $filename = $this->_getFilePath($key);
         $contents = '<?php' . "\n" . 'return ' . var_export($data, true) . ';' . "\n";

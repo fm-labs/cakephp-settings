@@ -6,7 +6,7 @@ use Cake\Core\Configure;
 
 class AppController extends \App\Controller\Admin\AppController
 {
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
 

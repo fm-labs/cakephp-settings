@@ -22,7 +22,7 @@ class SettingsFormTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         //$this->form = new SettingsForm();
     }
@@ -30,7 +30,7 @@ class SettingsFormTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         //unset($this->form);
     }
@@ -84,7 +84,7 @@ class SettingsFormTest extends TestCase
     {
         $this->markTestIncomplete();
         $result = $this->form->getInputs();
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
 
         $this->markTestIncomplete('Data not tested');
     }
