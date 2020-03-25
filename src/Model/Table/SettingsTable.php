@@ -78,17 +78,17 @@ class SettingsTable extends Table
     {
         $validator
             ->add('id', 'valid', ['rule' => 'numeric'])
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', 'create');
 
         $validator
-            ->allowEmpty('scope');
+            ->allowEmptyString('scope');
 
         $validator
             ->requirePresence('key')
-            ->notEmpty('key');
+            ->notEmptyString('key');
 
         $validator
-            ->allowEmpty('value');
+            ->allowEmptyString('value');
 
         return $validator;
     }

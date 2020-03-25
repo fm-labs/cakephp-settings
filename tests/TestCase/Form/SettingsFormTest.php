@@ -83,7 +83,7 @@ class SettingsFormTest extends TestCase
     public function testInputsGetter()
     {
         $this->markTestIncomplete();
-        $result = $this->form->inputs();
+        $result = $this->form->getInputs();
         $this->assertInternalType('array', $result);
 
         $this->markTestIncomplete('Data not tested');
@@ -95,8 +95,8 @@ class SettingsFormTest extends TestCase
     public function testInputsSetter()
     {
         $this->markTestIncomplete();
-        $this->form->inputs(['test_input' => ['type' => 'text']]);
-        $result = $this->form->inputs();
+        //$this->form->setInputs(['test_input' => ['type' => 'text']]);
+        $result = $this->form->getInputs();
 
         $this->assertArrayHasKey('test_input', $result);
     }
@@ -107,7 +107,7 @@ class SettingsFormTest extends TestCase
     public function testValue()
     {
         $this->markTestIncomplete();
-        $this->form->manager(new TestSettingsManager());
+        $this->form->setSettingsManager(new TestSettingsManager());
         $this->assertEquals($this->form->value('test_string'), 'Some Text');
         $this->assertEquals($this->form->value('test_int'), 3);
         $this->assertEquals($this->form->value('test_bool'), true);

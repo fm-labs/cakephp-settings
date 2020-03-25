@@ -90,7 +90,6 @@ class SettingsManager
      * @param string $group Setting group alias
      * @param array $config Setting group config
      * @return $this
-     * @deprecated Grouping has been deprecated - Use push() method instead
      */
     public function addGroup($group, array $config = [])
     {
@@ -116,7 +115,6 @@ class SettingsManager
      * @param string $key Setting key
      * @param array $config Setting schema
      * @return $this
-     * @deprecated Grouping has been deprecated - Use push() method instead
      */
     public function add($group, $key, array $config = [])
     {
