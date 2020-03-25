@@ -51,7 +51,7 @@ class SettingsForm extends Form
      * @param \Cake\Form\Schema|null $schema
      * @return \Cake\Form\Schema
      */
-    public function schema(?Schema $schema = null)
+    public function schema(?Schema $schema = null): Schema
     {
         return parent::schema($schema);
     }
@@ -60,7 +60,7 @@ class SettingsForm extends Form
      * @param \Cake\Form\Schema $schema
      * @return \Cake\Form\Schema
      */
-    protected function _buildSchema(Schema $schema)
+    protected function _buildSchema(Schema $schema): Schema
     {
         foreach ($this->getSettingsManager()->getSettings() as $key => $config) {
             $columnConfig = array_diff_key($config, ['inputType' => null, 'input' => null, 'default' => null]);
@@ -206,8 +206,9 @@ class SettingsForm extends Form
      * @param array $data
      * @return $this|bool
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): bool
     {
-        return $this->getSettingsManager()->apply($data);
+        $this->getSettingsManager()->apply($data);
+        return true;
     }
 }
