@@ -81,7 +81,7 @@ class Plugin extends BasePlugin implements EventListenerInterface
     }
 
     /**
-     * @param Event $event The event object
+     * @param \Cake\Event\Event $event The event object
      * @param \Banana\Menu\Menu $menu
      */
     public function buildBackendMenu(Event $event, Menu $menu)

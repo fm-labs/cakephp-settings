@@ -209,6 +209,7 @@ class SettingsForm extends Form
     public function execute(array $data = []): bool
     {
         $this->getSettingsManager()->apply($data);
+
         return true;
     }
 }
