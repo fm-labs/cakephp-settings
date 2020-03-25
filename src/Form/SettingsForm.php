@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Settings\Form;
 
@@ -18,14 +19,14 @@ use Settings\SettingsManager;
 class SettingsForm extends Form
 {
     /**
-     * @var SettingsManager
+     * @var \Settings\SettingsManager
      */
     protected $_manager;
 
     /**
-     * @param EventManager $eventManager
+     * @param \Cake\Event\EventManager $eventManager
      */
-    public function __construct(EventManager $eventManager = null)
+    public function __construct(?EventManager $eventManager = null)
     {
         parent::__construct($eventManager);
     }
@@ -47,17 +48,17 @@ class SettingsForm extends Form
     }
 
     /**
-     * @param Schema|null $schema
-     * @return Schema
+     * @param \Cake\Form\Schema|null $schema
+     * @return \Cake\Form\Schema
      */
-    public function schema(Schema $schema = null)
+    public function schema(?Schema $schema = null)
     {
         return parent::schema($schema);
     }
 
     /**
-     * @param Schema $schema
-     * @return Schema
+     * @param \Cake\Form\Schema $schema
+     * @return \Cake\Form\Schema
      */
     protected function _buildSchema(Schema $schema)
     {
@@ -84,7 +85,7 @@ class SettingsForm extends Form
         $settings = $this->getSettingsManager()->getSettings();
         if ($subset !== null) {
             if (is_string($subset)) {
-                $settings = array_filter($settings, function($config) use ($subset) {
+                $settings = array_filter($settings, function ($config) use ($subset) {
                     return $config['scope'] == $subset;
                 });
             } elseif (is_array($subset)) {

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Settings\Controller\Admin;
 
@@ -10,6 +11,6 @@ class AppController extends \App\Controller\Admin\AppController
     {
         parent::initialize();
 
-        $this->modelClass = (Configure::read('Settings.modelName')) ?: 'Settings.Settings';
+        $this->modelClass = Configure::read('Settings.modelName') ?: 'Settings.Settings';
     }
 }

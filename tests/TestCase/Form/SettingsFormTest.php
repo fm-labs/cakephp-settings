@@ -1,10 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace Settings\Test\TestCase\Form;
 
 use Cake\Form\Schema;
 use Cake\TestSuite\TestCase;
-use Settings\Form\SettingsForm;
 use Settings\Test\TestCase\TestSettingsManager;
 
 /**

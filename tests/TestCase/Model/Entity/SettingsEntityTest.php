@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Settings\Test\TestCase\Model\Entity;
 
 use Cake\TestSuite\TestCase;
@@ -6,7 +8,6 @@ use Settings\Model\Entity\Setting;
 
 class SettingsEntityTest extends TestCase
 {
-
     /**
      * @var Setting
      */

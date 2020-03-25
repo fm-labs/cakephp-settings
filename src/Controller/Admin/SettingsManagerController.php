@@ -1,8 +1,8 @@
 <?php
+declare(strict_types=1);
 
 namespace Settings\Controller\Admin;
 
-use Banana\Banana;
 use Cake\Cache\Cache;
 use Cake\Core\App;
 use Cake\Core\Configure;
@@ -11,13 +11,12 @@ use Cake\Event\Event;
 use Cake\Log\Log;
 use Cake\Utility\Hash;
 use Settings\Form\SettingsForm;
-use Settings\Model\Table\SettingsTable;
 use Settings\SettingsManager;
 
 /**
  * Settings Controller
  *
- * @property SettingsTable $Settings
+ * @property \Settings\Model\Table\SettingsTable $Settings
  */
 class SettingsManagerController extends AppController
 {
@@ -32,12 +31,12 @@ class SettingsManagerController extends AppController
     ];
 
     /**
-     * @var SettingsManager
+     * @var \Settings\SettingsManager
      */
     public $_settingsManager;
 
     /**
-     * @return SettingsManager
+     * @return \Settings\SettingsManager
      */
     public function settingsManager()
     {
@@ -80,7 +79,6 @@ class SettingsManagerController extends AppController
             ->find()
             ->where(['Settings.scope' => $scope])
             ->all();
-
 
         //@TODO Use database transaction to save settings
         $this->Settings->getConnection()->begin();
@@ -142,10 +140,9 @@ class SettingsManagerController extends AppController
         $form->setSettingsManager($this->settingsManager());
         $this->set('form', $form);
 
-
         $templateFile = sprintf(
             "%ssrc/Template/%s/%s.ctp",
-            (Plugin::loaded($scope)) ? Plugin::path($scope) : App::path('Template')[0],
+            Plugin::loaded($scope) ? Plugin::path($scope) : App::path('Template')[0],
             'Admin/Settings',
             'index'
         );
@@ -154,7 +151,7 @@ class SettingsManagerController extends AppController
             $this->viewBuilder()
                 //->setPlugin($scope)
                 ->setTemplatePath('Admin/Settings')
-                ->setTemplate($scope.'.index');
+                ->setTemplate($scope . '.index');
         }
     }
 

@@ -1,9 +1,10 @@
 <?php
+declare(strict_types=1);
+
 namespace Settings\Configure\Engine;
 
 use Cake\Cache\Cache;
 use Cake\Core\Configure\ConfigEngineInterface;
-use Cake\Database\Exception as DatabaseException;
 use Cake\Log\Log;
 use Cake\ORM\TableRegistry;
 

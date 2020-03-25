@@ -1,8 +1,8 @@
 <?php
+declare(strict_types=1);
 
 namespace Settings;
 
-use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Utility\Hash;
 
@@ -54,7 +54,7 @@ class SettingsManager
      */
     public function value($key)
     {
-        return (isset($this->_values[$key])) ? $this->_values[$key] : null;
+        return $this->_values[$key] ?? null;
     }
 
     /**
@@ -65,8 +65,8 @@ class SettingsManager
      */
     public function load($file = 'settings')
     {
-        list($plugin, $file) = pluginSplit($file);
-        $path = ($plugin) ? Plugin::configPath($plugin) : CONFIG;
+        [$plugin, $file] = pluginSplit($file);
+        $path = $plugin ? Plugin::configPath($plugin) : CONFIG;
         $filepath = $path . $file . '.php';
         $reader = function ($path) {
             if (!file_exists($path)) {
@@ -128,7 +128,7 @@ class SettingsManager
 
         $scope = $group;
         if (strpos($group, ".")) {
-            list($scope,) = pluginSplit($group);
+            [$scope,] = pluginSplit($group);
         }
 
         $config['group'] = $group;
@@ -197,7 +197,7 @@ class SettingsManager
         }
         */
         foreach ($this->_settings as $key => $config) {
-            $value = (isset($this->_values[$key])) ? $this->_values[$key] : null;
+            $value = $this->_values[$key] ?? null;
 
             $compiled[$key] = $value;
         }
@@ -209,7 +209,7 @@ class SettingsManager
     {
         return [
             'settings' => $this->_settings,
-            'compiled' => $this->getCompiled()
+            'compiled' => $this->getCompiled(),
         ];
     }
 }

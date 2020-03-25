@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
+
 namespace Settings\Model\Table;
 
 use Cake\Core\Configure;
-use Cake\Event\Event;
 use Cake\ORM\Entity;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -49,7 +50,7 @@ class SettingsTable extends Table
      * @param $key
      * @param $value
      * @param $scope
-     * @return bool|\Cake\Datasource\EntityInterface|Entity|mixed
+     * @return bool|\Cake\Datasource\EntityInterface|\Cake\ORM\Entity|mixed
      */
     public function updateSetting($key, $value, $scope)
     {
@@ -94,8 +95,8 @@ class SettingsTable extends Table
     }
 
     /**
-     * @param Event $event
-     * @param Entity $entity
+     * @param \Cake\Event\Event $event
+     * @param \Cake\ORM\Entity $entity
      * @param \ArrayObject $options
      */
     public function afterSave(\Cake\Event\EventInterface $event, Entity $entity, \ArrayObject $options)
@@ -104,8 +105,8 @@ class SettingsTable extends Table
     }
 
     /**
-     * @param Event $event
-     * @param Entity $entity
+     * @param \Cake\Event\Event $event
+     * @param \Cake\ORM\Entity $entity
      * @param \ArrayObject $options
      */
     public function afterDelete(\Cake\Event\EventInterface $event, Entity $entity, \ArrayObject $options)

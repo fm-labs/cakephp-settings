@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Settings\Model\Entity;
 
 use Cake\Core\Configure;
@@ -9,7 +11,6 @@ use Cake\ORM\Entity;
  */
 class Setting extends Entity
 {
-
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
      *

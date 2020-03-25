@@ -1,10 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace Settings\View\Form;
 
 use Cake\Http\ServerRequest as Request;
 use Cake\View\Form\ContextInterface;
-use Settings\Form\SettingsForm;
 
 /**
  * Class SettingsFormContext
@@ -13,9 +13,8 @@ use Settings\Form\SettingsForm;
  */
 class SettingsFormContext implements ContextInterface
 {
-
     /**
-     * @var SettingsForm
+     * @var \Settings\Form\SettingsForm
      */
     protected $_form;
 

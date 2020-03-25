@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Settings;
 
@@ -8,7 +9,7 @@ namespace Settings;
 interface SettingsInterface
 {
     /**
-     * @param SettingsManager $settings
+     * @param \Settings\SettingsManager $settings
      * @deprecated
      */
     public function buildSettings(SettingsManager $settings);

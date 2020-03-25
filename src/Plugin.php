@@ -1,15 +1,16 @@
 <?php
+declare(strict_types=1);
 
 namespace Settings;
 
 use Banana\Menu\Menu;
 use Banana\Plugin\BasePlugin;
+use Cake\Core\Configure;
 use Cake\Core\PluginApplicationInterface;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\Event\EventManager;
 use Cake\Routing\Route\DashedRoute;
-use Cake\Core\Configure;
 use Settings\Configure\Engine\SettingsConfig;
 
 class Plugin extends BasePlugin implements EventListenerInterface
@@ -25,8 +26,8 @@ class Plugin extends BasePlugin implements EventListenerInterface
     }
 
     /**
-     * @param Event $event The event object
-     * @param Menu $menu
+     * @param \Cake\Event\Event $event The event object
+     * @param \Banana\Menu\Menu $menu
      */
     public function buildBackendMenu(Event $event, Menu $menu)
     {
@@ -48,7 +49,7 @@ class Plugin extends BasePlugin implements EventListenerInterface
         if (!\Cake\Cache\Cache::getConfig('settings')) {
             \Cake\Cache\Cache::setConfig('settings', [
                 'className' => 'File',
-                'duration' => (Configure::read('debug')) ? '+5 minutes' : '+ 999 days',
+                'duration' => Configure::read('debug') ? '+5 minutes' : '+ 999 days',
                 'path' => CACHE,
                 'prefix' => 'settings_',
             ]);

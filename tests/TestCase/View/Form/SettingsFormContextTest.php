@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Settings\Test\TestCase\View\Form;
 
@@ -14,7 +15,6 @@ use Settings\View\Form\SettingsFormContext;
  */
 class SettingsFormContextTest extends TestCase
 {
-
     /**
      * @var SettingsFormContext
      */
