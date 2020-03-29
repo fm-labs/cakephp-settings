@@ -111,13 +111,13 @@ class SettingsManagerController extends AppController
         }
         $this->Settings->getConnection()->commit();
 
-        Cache::clear(false, 'settings');
+        Cache::clear('settings');
         Configure::write($compiled);
 
         return true;
     }
 
-    public function manage($scope = SETTINGS_SCOPE)
+    public function manage($scope = 'global')
     {
         $values = $this->_loadValues($scope);
         $this->settingsManager()->apply($values);
@@ -141,8 +141,8 @@ class SettingsManagerController extends AppController
         $this->set('form', $form);
 
         $templateFile = sprintf(
-            "%ssrc/Template/%s/%s.ctp",
-            Plugin::loaded($scope) ? Plugin::path($scope) : App::path('Template')[0],
+            "%stemplates/%s/%s.php",
+            Plugin::isLoaded($scope) ? Plugin::path($scope) : App::path('Template')[0],
             'Admin/Settings',
             'index'
         );

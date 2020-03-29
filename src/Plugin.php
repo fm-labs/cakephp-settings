@@ -52,7 +52,7 @@ class Plugin extends BasePlugin implements EventListenerInterface
      */
     public function routes(RouteBuilder $routes): void
     {
-        $routes->scope('/admin/settings', ['prefix' => 'admin', 'plugin' => 'Settings'], function ($routes) {
+        $routes->scope('/admin/settings', ['prefix' => 'Admin', 'plugin' => 'Settings'], function ($routes) {
             $routes->connect(
                 '/manage/*',
                 ['controller' => 'SettingsManager', 'action' => 'manage'],
