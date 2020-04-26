@@ -56,7 +56,7 @@ class SettingsTable extends Table
     {
         $setting = $this->find()->where(['key' => $key, 'scope' => $scope])->first();
         if (!$setting) {
-            $setting = $this->newEntity();
+            $setting = $this->newEmptyEntity();
         }
 
         $setting = $this->patchEntity($setting, compact('key', 'value', 'scope'));

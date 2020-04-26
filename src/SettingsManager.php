@@ -112,7 +112,7 @@ class SettingsManager
 
     /**
      * @param string $group Setting group alias
-     * @param string $key Setting key
+     * @param string|array $key Setting key
      * @param array $config Setting schema
      * @return $this
      */

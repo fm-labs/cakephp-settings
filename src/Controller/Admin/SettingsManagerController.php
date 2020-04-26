@@ -207,7 +207,7 @@ class SettingsManagerController extends AppController
      */
     public function add()
     {
-        $setting = $this->Settings->newEntity();
+        $setting = $this->Settings->newEmptyEntity();
         if ($this->request->is('post')) {
             $setting = $this->Settings->patchEntity($setting, $this->request->getData());
             if ($this->Settings->save($setting)) {
