@@ -26,8 +26,8 @@ class SettingsManagerController extends AppController
     public $modelClass = false;
 
     public $actions = [
-        'edit' => 'Backend.Edit',
-        'view' => 'Backend.View',
+        'edit' => 'Admin.Edit',
+        'view' => 'Admin.View',
     ];
 
     /**

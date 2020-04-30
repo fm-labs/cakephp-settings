@@ -3,18 +3,12 @@ declare(strict_types=1);
 
 namespace Settings;
 
-use Banana\Menu\Menu;
-use Banana\Plugin\BasePlugin;
+use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
 use Cake\Core\PluginApplicationInterface;
-use Cake\Event\Event;
-use Cake\Event\EventListenerInterface;
-use Cake\Event\EventManager;
-use Cake\Routing\Route\DashedRoute;
-use Cake\Routing\RouteBuilder;
 use Settings\Configure\Engine\SettingsConfig;
 
-class Plugin extends BasePlugin implements EventListenerInterface
+class Plugin extends BasePlugin
 {
     /**
      * {@inheritDoc}
@@ -44,54 +38,8 @@ class Plugin extends BasePlugin implements EventListenerInterface
         Configure::load('default', 'settings');
         Configure::load('global', 'settings');
 
-        EventManager::instance()->on($this);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function routes(RouteBuilder $routes): void
-    {
-        $routes->scope('/admin/settings', ['prefix' => 'Admin', 'plugin' => 'Settings'], function ($routes) {
-            $routes->connect(
-                '/manage/*',
-                ['controller' => 'SettingsManager', 'action' => 'manage'],
-                ['_name' => 'settings:manage']
-            );
-            $routes->fallbacks(DashedRoute::class);
-        });
-    }
-
-    /**
-     * @return array|null
-     */
-    public function getConfigurationUrl()
-    {
-        return ['_name' => 'settings:manage', $this->getName()];
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function implementedEvents(): array
-    {
-        return [
-            'Backend.Menu.build.admin_system' => ['callable' => 'buildBackendMenu', 'priority' => 90],
-        ];
-    }
-
-    /**
-     * @param \Cake\Event\Event $event The event object
-     * @param \Banana\Menu\Menu $menu
-     */
-    public function buildBackendMenu(Event $event, Menu $menu)
-    {
-        $children = [];
-        $menu->addItem([
-            'title' => 'Settings',
-            'url' => ['plugin' => 'Settings', 'controller' => 'SettingsManager', 'action' => 'manage'],
-            'data-icon' => 'sliders',
-            'children' => $children,
-        ]);
+        if (\Cake\Core\Plugin::isLoaded('Admin')) {
+            \Admin\Admin::addPlugin(new \Settings\Admin());
+        }
     }
 }
