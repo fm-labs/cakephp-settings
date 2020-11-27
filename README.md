@@ -1,8 +1,5 @@
 # Settings plugin for CakePHP
 
-Enables a set of configuration values to be 
-
-
 
 ## Installation
 
@@ -10,70 +7,9 @@ You can install this plugin into your CakePHP application using [composer](http:
 
 The recommended way to install composer packages is:
 
+```shell
+$ composer require fm-labs/cakephp-settings
 ```
-composer require fm-labs/cakephp-settings
-```
-
-
-## Define Settings
-
-### Define Settings as JSON
-
-For example, to define settings for your app
-
-Create config/settings/app.json
-
-```json
-
-{
-    "site.title": {
-        "type": "string",
-        "desc": "Name of your site",
-        "default": "My awesome Site",
-    },
-    
-    "session.timeout": {
-        "type": "int",
-        "desc": "Time in seconds after which the session will be terminated automatically",
-        "default": 3600
-    },
-    
-    "frontend.theme": {
-        "type": "string",
-        "desc": "Frontend Theme"
-        "default": "",
-        "options": [
-            "ThemeDefault",
-            "ThemeClassic"
-        ]
-    },
-    
-    "maintenance.enabled": {
-        "type": "boolean",
-        "default": false
-    },
-    
-}
-
-```
-
-
-- Define Settings as JSON
-- Define Settings as Class
-
-## Define Settings for plugins
-
-Create a settings definition file in
-
-``` 
-PLUGINS/MyPlugin/config/settings/my_plugin.json
-```
-
-
-## How it works
-
-1. Settings definitions get parsed
-
 
 
 ## Usage
@@ -82,16 +18,63 @@ PLUGINS/MyPlugin/config/settings/my_plugin.json
 
 To load settings for your app:
 
-```
-Configure::load('app', 'settings')
+```php
+// In your bootstrap.php or in Plugin::bootstrap()
+\Cake\Core\Configure::load('app', 'settings');
 ```
 
 To load plugin settings:
 
-```
-Configure::load('underscored_plugin_name_here', 'settings')
+```php
+// In your bootstrap.php or in Plugin::bootstrap()
+\Cake\Core\Configure::load('plugin_name', 'settings');
 ```
 
 
-## Limitations
+## Manage Settings
+
+### Settings Schema
+
+
+## Plugin settings
+
+Create a settings definition file in
+
+``` 
+PLUGINS/MyPlugin/config/settings.php
+```
+
+
+## Events
+
+### Settings.build
+
+```php
+    /**
+     *
+     */
+    public function implementedEvents()
+    {
+        return [
+            'Settings.build' => 'buildSettings',
+        ];       
+    }
+
+    /**
+     * @param \Cake\Event\Event $event The event object
+     * @param \Settings\SettingsManager $settings The settings manager object
+     * @return void
+     */
+    public function buildSettings(Event $event, $settings)
+    {
+        $settings->load('User.settings');
+        $settings->addGroup('User.Password', ['label' => 'User Password Settings']);
+        $settings->add('User.Password.expireInDays', [
+            'group' => 'User.Password',
+            'type' => 'int',
+            'label' => 'Password expiry (in days)',
+            'help' => 'The password will expire in X days and a new password needs to be entered by the user at the next login.'
+        ]);
+    }
+```
 

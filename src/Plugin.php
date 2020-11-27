@@ -34,9 +34,8 @@ class Plugin extends BasePlugin
             ]);
         }
 
-        Configure::config('settings', new SettingsConfig(Configure::read('Settings.modelName')));
-        Configure::load('default', 'settings');
-        Configure::load('global', 'settings');
+        Configure::config('settings', new SettingsConfig(Configure::read('Settings.modelName'), 'plugin'));
+        //Configure::load('App:default', 'settings');
 
         if (\Cake\Core\Plugin::isLoaded('Admin')) {
             \Admin\Admin::addPlugin(new \Settings\Admin());

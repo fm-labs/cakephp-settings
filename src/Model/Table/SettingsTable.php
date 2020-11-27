@@ -3,15 +3,16 @@ declare(strict_types=1);
 
 namespace Settings\Model\Table;
 
-use Cake\Core\Configure;
+use Cake\Cache\Cache;
+use Cake\Log\Log;
 use Cake\ORM\Entity;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
-use Settings\SettingsManager;
+use Settings\Configure\Engine\SettingsConfig;
+use Settings\Settings;
 
 /**
  * Settings Model
- *
  */
 class SettingsTable extends Table
 {
@@ -32,41 +33,86 @@ class SettingsTable extends Table
     }
 
     /**
-     * @param $list
-     * @param $scope
-     * @return array
+     * Alias for updateValue().
+     *
+     * @param string $scope Setting scope
+     * @param string $plugin Plugin name
+     * @param string $key Setting key
+     * @param string $value Setting value
+     * @return bool|\Cake\Datasource\EntityInterface|\Cake\ORM\Entity|mixed
      */
-    public function updateSettings($list, $scope)
+    public function addValue(string $scope, string $plugin, string $key, $value)
     {
-        $entities = [];
-        foreach ($list as $key => $val) {
-            $entities[$key] = $this->updateSetting($key, $val, $scope);
-        }
-
-        return $entities;
+        return $this->updateValue($scope, $plugin, $key, $value);
     }
 
     /**
-     * @param $key
-     * @param $value
-     * @param $scope
+     * Upsert setting value.
+     *
+     * @param string $scope Setting scope
+     * @param string $plugin Plugin name
+     * @param string $key Setting key
+     * @param string $value Setting value
      * @return bool|\Cake\Datasource\EntityInterface|\Cake\ORM\Entity|mixed
      */
-    public function updateSetting($key, $value, $scope)
+    public function updateValue(string $scope, string $plugin, string $key, $value)
     {
-        $setting = $this->find()->where(['key' => $key, 'scope' => $scope])->first();
-        if (!$setting) {
-            $setting = $this->newEmptyEntity();
-        }
+        $search = ['key' => $key, 'scope' => $scope, 'plugin' => $plugin];
+        $setting = $this->findOrCreate($search);
 
-        $setting = $this->patchEntity($setting, compact('key', 'value', 'scope'));
+        $setting = $this->patchEntity($setting, compact('value'));
         if ($setting->getErrors()) {
             debug($setting->getErrors());
-
+            //@TODO throw exception
             return $setting;
         }
 
         return $this->save($setting);
+    }
+
+    /**
+     * Upsert multiple settings values using a transaction.
+     *
+     * @param string $scope Setting scope
+     * @param string $plugin Plugin name
+     * @param array $values Key-value pairs of settings values
+     * @return bool
+     * @throws \Exception
+     */
+    public function updateValues(string $scope, string $plugin, array $values): bool
+    {
+        $settingIds = $this->find('list', ['keyField' => 'key', 'valueField' => 'id'])
+            ->where(['scope' => $scope, 'plugin' => $plugin])
+            ->all()
+            ->toArray();
+
+        $entities = [];
+        foreach ($values as $key => $value) {
+            $data = [];
+            $data['scope'] = $scope;
+            $data['plugin'] = $plugin;
+            $data['key'] = $key;
+            $data['value'] = $value;
+            $data['id'] = $settingIds[$key] ?? null;
+
+            /** @var \Settings\Model\Entity\Setting $_setting */
+            $_setting = $this->newEntity($data);
+            $_setting->id = $settingIds[$key] ?? null;
+
+            if ($_setting->getErrors()) {
+                debug($_setting->getErrors());
+                Log::error("Setting with key $key has errors", ['settings']);
+                //return false;
+            }
+
+            $entities[] = $_setting;
+        }
+
+        if ($this->saveMany($entities)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -82,7 +128,12 @@ class SettingsTable extends Table
             ->allowEmptyString('id', 'create');
 
         $validator
-            ->allowEmptyString('scope');
+            ->requirePresence('plugin')
+            ->notEmptyString('plugin');
+
+        $validator
+            ->requirePresence('scope')
+            ->notEmptyString('scope');
 
         $validator
             ->requirePresence('key')
@@ -91,8 +142,14 @@ class SettingsTable extends Table
         $validator
             ->allowEmptyString('value');
 
+        $validator
+            ->allowEmptyString('locked')
+            ->boolean('locked');
+
         return $validator;
     }
+
+
 
     /**
      * @param \Cake\Event\Event $event
@@ -101,7 +158,7 @@ class SettingsTable extends Table
      */
     public function afterSave(\Cake\Event\EventInterface $event, Entity $entity, \ArrayObject $options)
     {
-        //$this->dumpSettingsConfig($entity->scope);
+        $this->clearSettingsCache($entity);
     }
 
     /**
@@ -111,38 +168,11 @@ class SettingsTable extends Table
      */
     public function afterDelete(\Cake\Event\EventInterface $event, Entity $entity, \ArrayObject $options)
     {
-        //$this->dumpSettingsConfig($entity->scope);
+        $this->clearSettingsCache($entity);
     }
 
-    /**
-     * @return array
-     */
-    public function listByKeys()
+    public function clearSettingsCache(Entity $entity)
     {
-        //@TODO Refactor with Collection methods
-        $list = [];
-        $data = $this->find()->all()->toArray();
-        array_walk($data, function ($entity) use (&$list) {
-            $list[$entity->key] = $entity->id;
-        });
-
-        return $list;
-    }
-
-    /**
-     * @param string $scope
-     * @return array
-     */
-    public function getCompiled($scope = 'default')
-    {
-        return (new SettingsManager($scope))->getCompiled();
-    }
-
-    /**
-     * @param $scope
-     */
-    public function dumpSettingsConfig($scope)
-    {
-        Configure::dump($scope, 'settings', ['Settings']);
+        SettingsConfig::clearCache($entity->plugin);
     }
 }

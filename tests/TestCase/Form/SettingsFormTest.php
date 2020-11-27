@@ -41,7 +41,7 @@ class SettingsFormTest extends TestCase
     public function testManagerGetter()
     {
         $this->markTestIncomplete();
-        $this->assertInstanceOf('Settings\SettingsManager', $this->form->manager());
+        $this->assertInstanceOf('Settings\Settings\SettingsManager', $this->form->manager());
     }
 
     /**

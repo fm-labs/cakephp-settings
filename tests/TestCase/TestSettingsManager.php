@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Settings\Test\TestCase;
 
-use Settings\SettingsManager;
+use Settings\Settings\SettingsManager;
 
 /**
  * Class TestSettingsManager

@@ -8,6 +8,13 @@ use Cake\ORM\Entity;
 
 /**
  * Setting Entity.
+ *
+ * @property int $id
+ * @property string $scope
+ * @property string $plugin
+ * @property string $key
+ * @property mixed $value
+ * @property bool $locked
  */
 class Setting extends Entity
 {
@@ -17,11 +24,13 @@ class Setting extends Entity
      * @var array
      */
     protected $_accessible = [
-        'id' => false,
+        'id' => true,
         'scope' => true,
+        'plugin' => true,
         'key' => true,
         'value' => true,
-        '*' => false,
+        'locked' => true,
+        '*' => true,
     ];
 
     /**
@@ -29,24 +38,19 @@ class Setting extends Entity
      */
     protected $_virtual = [
         'scoped_key',
-        'default',
-        'actual',
     ];
 
     /**
      * @return string
      */
-    protected function _getScopedKey()
+    protected function _getScopedKey(): string
     {
-        return sprintf("%s.%s", $this->scope, $this->key);
+        return sprintf('%s:%s', $this->scope, $this->key);
     }
 
-    protected function _getDefault()
-    {
-        //@todo Implement me
-        return null;
-    }
-
+    /**
+     * @return null|mixed
+     */
     protected function _getActual()
     {
         return Configure::read($this->key);

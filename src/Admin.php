@@ -8,33 +8,30 @@ use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\RouteBuilder;
-use Cupcake\Menu\Menu;
+use Cupcake\Menu\MenuItemCollection;
 
 class Admin extends BaseAdminPlugin implements EventListenerInterface
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function routes(RouteBuilder $routes): void
     {
         $routes->connect(
-            '/manage/*',
-            ['controller' => 'SettingsManager', 'action' => 'manage'],
-            ['_name' => 'settings:manage']
+            '/',
+            ['controller' => 'Settings', 'action' => 'index'],
+            ['_name' => 'index']
+        );
+        $routes->connect(
+            '/{scope}/{pluginName}',
+            ['controller' => 'Settings', 'action' => 'index'],
+            ['_name' => 'manage', 'pass' => ['scope', 'pluginName']]
         );
         $routes->fallbacks(DashedRoute::class);
     }
 
     /**
-     * @return array|null
-     */
-    public function getConfigurationUrl()
-    {
-        return ['_name' => 'settings:manage', $this->getName()];
-    }
-
-    /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function implementedEvents(): array
     {
@@ -45,15 +42,15 @@ class Admin extends BaseAdminPlugin implements EventListenerInterface
 
     /**
      * @param \Cake\Event\Event $event The event object
-     * @param \Cupcake\Menu\Menu $menu The menu
+     * @param \Cupcake\Menu\MenuItemCollection $menu The menu
      * @return void
      */
-    public function buildAdminMenu(Event $event, Menu $menu): void
+    public function buildAdminMenu(Event $event, MenuItemCollection $menu): void
     {
         $children = [];
         $menu->addItem([
             'title' => 'Settings',
-            'url' => ['plugin' => 'Settings', 'controller' => 'SettingsManager', 'action' => 'manage'],
+            'url' => ['_name' => 'admin:settings:index'],
             'data-icon' => 'sliders',
             'children' => $children,
         ]);

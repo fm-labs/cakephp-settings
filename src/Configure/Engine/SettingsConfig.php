@@ -15,32 +15,49 @@ use Cake\ORM\TableRegistry;
  */
 class SettingsConfig implements ConfigEngineInterface
 {
+    public const CACHE_CONFIG = 'settings';
+
     /**
      * @var string Path to settings dir
      */
     protected $_modelClass = "Settings.Settings";
 
     /**
-     * File extension.
-     *
-     * @var string
+     * @var string File extension
      */
     protected $_extension = '.php';
 
     /**
-     * File prefix.
-     *
-     * @var string
+     * @var string File prefix.
      */
     protected $_prefix = 'settings_';
 
     /**
+     * @var string Table column name where the setting scope is stored
+     */
+    protected $_scopeField = 'plugin';
+
+    /**
+     * Clear the settings cache.
+     *
+     * @param string $key
+     * @return bool
+     */
+    public static function clearCache(string $key): bool
+    {
+        return Cache::delete($key, static::CACHE_CONFIG);
+    }
+
+    /**
      * @param string|null $modelClass
      */
-    public function __construct($modelClass = null)
+    public function __construct($modelClass = null, $scopeField = null)
     {
         if ($modelClass) {
             $this->_modelClass = $modelClass;
+        }
+        if ($scopeField) {
+            $this->_scopeField = $scopeField;
         }
     }
 
@@ -51,15 +68,15 @@ class SettingsConfig implements ConfigEngineInterface
      */
     public function read(string $key): array
     {
-        $settings = Cache::read($key, 'settings');
+        $settings = Cache::read($key, static::CACHE_CONFIG);
         if (!$settings) {
             try {
                 $Table = TableRegistry::getTableLocator()->get($this->_modelClass);
                 $query = $Table->find('list', ['keyField' => 'key', 'valueField' => 'value'])
-                    ->where(['scope' => $key]);
+                    ->where([$this->_scopeField => $key]);
                 $settings = $query->toArray();
 
-                Cache::write($key, $settings, 'settings');
+                Cache::write($key, $settings, static::CACHE_CONFIG);
             } catch (\Exception $ex) {
                 Log::error('SettingsConfig: ' . $ex->getMessage(), ['settings']);
                 throw $ex;
@@ -92,8 +109,8 @@ class SettingsConfig implements ConfigEngineInterface
      * @param string $key Settings key
      * @return string
      */
-    protected function _getFilePath($key, $checkExists = false)
+    protected function _getFilePath($key)
     {
-        return CONFIG . DS . $this->_prefix . $key . 'php';
+        return CONFIG . DS . $this->_prefix . $key . $this->_extension;
     }
 }
