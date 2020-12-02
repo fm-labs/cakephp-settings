@@ -9,11 +9,11 @@ use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 
 /**
- * SettingsList command.
+ * Settings command.
  *
  * @property \Settings\Model\Table\SettingsTable $Settings
  */
-class SettingsListCommand extends Command
+class SettingsGetValueCommand extends Command
 {
     /**
      * @var string
@@ -25,7 +25,7 @@ class SettingsListCommand extends Command
      */
     public static function defaultName(): string
     {
-        return 'settings list';
+        return 'settings get-value';
     }
 
     /**
@@ -41,18 +41,18 @@ class SettingsListCommand extends Command
         $parser->addOption('scope', [
             'short' => 's',
             'required' => false,
-            'help' => 'Only show settings with given scope',
-            'default' => null,
+            'help' => 'Settings scope (Default: \'all\')',
+            'default' => 'default',
         ]);
         $parser->addOption('plugin', [
             'short' => 'p',
             'required' => false,
-            'help' => 'Only show settings from given plugin name',
+            'help' => 'Only show settings from plugin with given name (Default: \'all\')',
             'default' => null,
         ]);
-        $parser->addOption('key', [
-            'required' => false,
-            'help' => 'Only show settings with given key',
+        $parser->addArgument('key', [
+            'required' => true,
+            'help' => 'Settings key (Default: \'all\')',
             'default' => null,
         ]);
 
@@ -68,26 +68,22 @@ class SettingsListCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $query = $this->Settings->find();
         $conditions = [];
-        foreach (['scope', 'plugin', 'key'] as $field) {
-            $arg = $args->getOption($field);
-            if ($arg && $arg != 'all') {
-                $conditions[$field . ' LIKE'] = '%' . $arg . '%';
-            }
+        $conditions['Settings.scope'] = $args->getOption('scope');
+        if ($args->getOption('plugin')) {
+            $conditions['Settings.plugin'] = $args->getOption('plugin');
         }
-        $query->where($conditions);
+        $conditions['Settings.key'] = $args->getArgument('key');
+        $setting = $this->Settings->find()
+            ->where($conditions)
+            ->first();
 
-        $settings = $query->all();
-        $io->out(sprintf('Found %d settings', count($settings)));
+        if (!$setting) {
+            $io->warning('<notfound>');
 
-        $data = [
-            ['Scope', 'Plugin', 'Key', 'Value', 'Locked'],
-        ];
-        $settings->each(function ($setting) use (&$data) {
-            $value = $setting->value ?? '<null>';
-            $data[] = [$setting->scope, $setting->plugin, $setting->key, $value, (string)intval($setting->locked)];
-        });
-        $io->helper('Table')->output($data);
+            return;
+        }
+
+        $io->out((string)$setting->value);
     }
 }

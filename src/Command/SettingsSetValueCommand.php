@@ -3,22 +3,29 @@ declare(strict_types=1);
 
 namespace Settings\Command;
 
+use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
-use Cake\Datasource\EntityInterface;
 
 /**
  * SettingsAdd command.
+ *
+ * @property \Settings\Model\Table\SettingsTable $Settings
  */
-class SettingsAddCommand extends BaseCommand
+class SettingsSetValueCommand extends Command
 {
+    /**
+     * @var string
+     */
+    public $modelClass = 'Settings.Settings';
+
     /**
      * @return string
      */
     public static function defaultName(): string
     {
-        return 'settings add';
+        return 'settings set-value';
     }
 
     /**
@@ -31,13 +38,22 @@ class SettingsAddCommand extends BaseCommand
     public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
         $parser = parent::buildOptionParser($parser);
-        $parser->addArgument('scope', [
+        $parser->addOption('scope', [
+            'short' => 's',
             'required' => true,
             'help' => 'Settings scope',
+            'default' => 'default',
+        ]);
+        $parser->addOption('plugin', [
+            'short' => 'p',
+            'required' => true,
+            'help' => 'Only show settings from plugin with given name (Default: \'all\')',
+            'default' => null,
         ]);
         $parser->addArgument('key', [
             'required' => true,
-            'help' => 'Settings key',
+            'help' => 'Settings key (Default: \'all\')',
+            'default' => null,
         ]);
         $parser->addArgument('value', [
             'required' => true,
@@ -56,25 +72,36 @@ class SettingsAddCommand extends BaseCommand
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $io->out(sprintf('scope: %s', $args->getArgument('scope')));
-        $io->out(sprintf('key: %s', $args->getArgument('key')));
-        $io->out(sprintf('value: %s', $args->getArgument('value')));
 
-        $scope = $args->getArgument('scope');
+        $scope = $args->getOption('scope');
+        $plugin = $args->getOption('plugin');
         $key = $args->getArgument('key');
         $value = $args->getArgument('value');
 
-        $this->Settings = $this->loadModel('Settings.Settings');
+        $io->out(sprintf('scope: %s', $scope));
+        $io->out(sprintf('plugin: %s', $plugin));
+        $io->out(sprintf('key: %s', $key));
+        $io->out(sprintf('value: %s', $value));
+
+        if (!$scope || !$plugin || !$key) {
+            $io->error('Invalid arguments');
+            $this->abort();
+        }
+
+        //$this->Settings = $this->loadModel('Settings.Settings');
         $setting = $this->Settings->findOrCreate([
             'scope' => $scope,
+            'plugin' => $plugin,
             'key' => $key,
         ]);
+
+        $value = $value === 'null' ? null : $value;
         $setting->set('value', $value);
 
         if (!$this->Settings->save($setting)) {
-            $io->abort("${scope}:${key} - FAILED");
+            $io->abort("${scope}:${plugin}:${key} - FAILED");
         }
 
-        $io->success("${scope}:${key} - SAVED");
+        $io->success("${scope}:${plugin}:${key} - SAVED");
     }
 }

@@ -11,7 +11,7 @@ use Settings\Configure\Engine\SettingsConfig;
 class Plugin extends BasePlugin
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function bootstrap(PluginApplicationInterface $app): void
     {
@@ -34,8 +34,12 @@ class Plugin extends BasePlugin
             ]);
         }
 
-        Configure::config('settings', new SettingsConfig(Configure::read('Settings.modelName'), 'plugin'));
-        //Configure::load('App:default', 'settings');
+        try {
+            Configure::config('settings', new SettingsConfig(Configure::read('Settings.modelName'), 'plugin'));
+            //Configure::load('App:default', 'settings');
+        } catch (\Exception $ex) {
+            die($ex->getMessage());
+        }
 
         if (\Cake\Core\Plugin::isLoaded('Admin')) {
             \Admin\Admin::addPlugin(new \Settings\Admin());
