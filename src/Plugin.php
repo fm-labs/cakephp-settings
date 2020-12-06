@@ -13,13 +13,13 @@ class Plugin extends BasePlugin
     /**
      * @inheritDoc
      */
-    public function bootstrap(PluginApplicationInterface $app): void
+    public function initialize(): void
     {
         if (!\Cake\Cache\Cache::getConfig('settings')) {
             \Cake\Cache\Cache::setConfig('settings', [
                 'className' => 'File',
                 'duration' => Configure::read('debug') ? '+5 minutes' : '+ 999 days',
-                'path' => CACHE,
+                'path' => CACHE . 'settings' . DS,
                 'prefix' => 'settings_',
             ]);
         }
@@ -34,13 +34,20 @@ class Plugin extends BasePlugin
             ]);
         }
 
+        // register early on so that other plugin see that the 'settings' config engine is available
         try {
-            Configure::config('settings', new SettingsConfig(Configure::read('Settings.modelName'), 'plugin'));
-            //Configure::load('App:default', 'settings');
+            $engine = new SettingsConfig(Configure::read('Settings.modelName'), 'plugin');
+            Configure::config('settings', $engine);
         } catch (\Exception $ex) {
-            die($ex->getMessage());
+            debug($ex->getMessage());
         }
+    }
 
+    /**
+     * @inheritDoc
+     */
+    public function bootstrap(PluginApplicationInterface $app): void
+    {
         if (\Cake\Core\Plugin::isLoaded('Admin')) {
             \Admin\Admin::addPlugin(new \Settings\Admin());
         }
