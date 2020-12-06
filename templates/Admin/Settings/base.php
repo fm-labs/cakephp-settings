@@ -5,6 +5,18 @@
 $scope = $this->get('scope');
 $plugin = $this->get('pluginName');
 
+
+$this->Toolbar->addLink(
+    __d('settings', 'Backup'),
+    ['controller' => 'Settings', 'action' => 'backup'],
+    ['data-icon' => 'download']
+);
+$this->Toolbar->addLink(
+    __d('settings', 'Restore'),
+    ['controller' => 'Settings', 'action' => 'restore'],
+    ['data-icon' => 'upload']
+);
+
 ?>
 <div class="index">
     <div class="grid">

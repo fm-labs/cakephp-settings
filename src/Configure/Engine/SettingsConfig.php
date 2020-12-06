@@ -40,7 +40,7 @@ class SettingsConfig implements ConfigEngineInterface
     /**
      * Clear the settings cache.
      *
-     * @param string $key
+     * @param string $key Cache key
      * @return bool
      */
     public static function clearCache(string $key): bool
@@ -49,7 +49,8 @@ class SettingsConfig implements ConfigEngineInterface
     }
 
     /**
-     * @param string|null $modelClass
+     * @param string|null $modelClass Model class name
+     * @param string|null $scopeField Scope field name
      */
     public function __construct($modelClass = null, $scopeField = null)
     {
@@ -62,21 +63,21 @@ class SettingsConfig implements ConfigEngineInterface
     }
 
     /**
-     * @param string $key
+     * @param string $scope Settings scope
      * @return array
      * @throws \Exception
      */
-    public function read(string $key): array
+    public function read(string $scope): array
     {
-        $settings = Cache::read($key, static::CACHE_CONFIG);
+        $settings = Cache::read($scope, static::CACHE_CONFIG);
         if (!$settings) {
             try {
                 $Table = TableRegistry::getTableLocator()->get($this->_modelClass);
                 $query = $Table->find('list', ['keyField' => 'key', 'valueField' => 'value'])
-                    ->where([$this->_scopeField => $key]);
+                    ->where([$this->_scopeField => $scope]);
                 $settings = $query->toArray();
 
-                Cache::write($key, $settings, static::CACHE_CONFIG);
+                Cache::write($scope, $settings, static::CACHE_CONFIG);
             } catch (\Exception $ex) {
                 Log::error('SettingsConfig: ' . $ex->getMessage(), ['settings']);
                 throw $ex;

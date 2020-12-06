@@ -23,7 +23,7 @@ class Admin extends BaseAdminPlugin implements EventListenerInterface
             ['_name' => 'index']
         );
         $routes->connect(
-            '/{scope}/{pluginName}',
+            '/manage/{scope}/{pluginName}',
             ['controller' => 'Settings', 'action' => 'index'],
             ['_name' => 'manage', 'pass' => ['scope', 'pluginName']]
         );
@@ -36,7 +36,7 @@ class Admin extends BaseAdminPlugin implements EventListenerInterface
     public function implementedEvents(): array
     {
         return [
-            'Admin.Menu.build.admin_system' => ['callable' => 'buildAdminMenu', 'priority' => 90],
+            'Admin.Menu.build.admin_system' => ['callable' => 'adminMenuBuild', 'priority' => 90],
         ];
     }
 
@@ -45,7 +45,7 @@ class Admin extends BaseAdminPlugin implements EventListenerInterface
      * @param \Cupcake\Menu\MenuItemCollection $menu The menu
      * @return void
      */
-    public function buildAdminMenu(Event $event, MenuItemCollection $menu): void
+    public function adminMenuBuild(Event $event, MenuItemCollection $menu): void
     {
         $children = [];
         $menu->addItem([

@@ -3,13 +3,11 @@ declare(strict_types=1);
 
 namespace Settings\Model\Table;
 
-use Cake\Cache\Cache;
 use Cake\Log\Log;
 use Cake\ORM\Entity;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use Settings\Configure\Engine\SettingsConfig;
-use Settings\Settings;
 
 /**
  * Settings Model
@@ -149,12 +147,11 @@ class SettingsTable extends Table
         return $validator;
     }
 
-
-
     /**
-     * @param \Cake\Event\Event $event
-     * @param \Cake\ORM\Entity $entity
-     * @param \ArrayObject $options
+     * @param \Cake\Event\EventInterface $event Event
+     * @param \Cake\ORM\Entity $entity Entity
+     * @param \ArrayObject $options Options
+     * @return void
      */
     public function afterSave(\Cake\Event\EventInterface $event, Entity $entity, \ArrayObject $options)
     {
@@ -162,17 +159,33 @@ class SettingsTable extends Table
     }
 
     /**
-     * @param \Cake\Event\Event $event
-     * @param \Cake\ORM\Entity $entity
-     * @param \ArrayObject $options
+     * @param \Cake\Event\EventInterface $event Event
+     * @param \Cake\ORM\Entity $entity Entity
+     * @param \ArrayObject $options Options
+     * @return void
+     */
+    public function afterSaveCommit(\Cake\Event\EventInterface $event, Entity $entity, \ArrayObject $options)
+    {
+        $this->clearSettingsCache($entity);
+    }
+
+    /**
+     * @param \Cake\Event\EventInterface $event Event
+     * @param \Cake\ORM\Entity $entity Entity
+     * @param \ArrayObject $options Options
+     * @return void
      */
     public function afterDelete(\Cake\Event\EventInterface $event, Entity $entity, \ArrayObject $options)
     {
         $this->clearSettingsCache($entity);
     }
 
-    public function clearSettingsCache(Entity $entity)
+    /**
+     * @param \Cake\ORM\Entity $entity Settings entity
+     * @return bool
+     */
+    public function clearSettingsCache(Entity $entity): bool
     {
-        SettingsConfig::clearCache($entity->plugin);
+        return SettingsConfig::clearCache($entity->plugin);
     }
 }

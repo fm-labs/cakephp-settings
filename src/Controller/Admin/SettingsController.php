@@ -76,4 +76,22 @@ class SettingsController extends AppController
         $this->set(compact('pluginName', 'scope', 'settings', 'form'));
         $this->render('form');
     }
+
+    /**
+     * @return void
+     */
+    public function backup(): void
+    {
+        $this->Flash->warning(__('Not implemented yet'));
+        $this->redirect(['action' => 'index']);
+    }
+
+    /**
+     * @return void
+     */
+    public function restore(): void
+    {
+        $this->Flash->warning(__('Not implemented yet'));
+        $this->redirect(['action' => 'index']);
+    }
 }

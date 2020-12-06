@@ -14,12 +14,6 @@ if ($pluginName) {
     $this->Breadcrumbs->add(
         $pluginName,
         ['_name' => 'admin:settings:manage', 'scope' => $scope, 'pluginName' => $pluginName]);
-
-    $this->Toolbar->addLink(
-        __d('settings', 'Dump {0}', __d('settings', 'Settings')),
-        ['action' => 'dump', $scope, $pluginName],
-        ['data-icon' => 'download']
-    );
 }
 
 //$this->Form->addContextProvider('settings_form', function($request, $context) {
