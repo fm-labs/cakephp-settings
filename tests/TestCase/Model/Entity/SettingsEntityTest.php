@@ -32,7 +32,7 @@ class SettingsEntityTest extends TestCase
             'value' => 'bar',
         ]);
 
-        $this->assertEquals('test.foo', $this->Setting->scoped_key);
+        $this->assertEquals('test:foo', $this->Setting->scoped_key);
     }
 
     /**
