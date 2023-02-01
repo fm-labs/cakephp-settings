@@ -11,7 +11,7 @@ use Settings\Settings\SettingsManager;
  *
  * @property \Settings\Model\Table\SettingsTable $Settings
  */
-class SettingsController extends AppController
+class Settings1Controller extends AppController
 {
     /**
      * @var string
@@ -54,15 +54,11 @@ class SettingsController extends AppController
         //$settings->autoload();
         $settings->load($settingsName);
 
-        try {
-            $values = $this->Settings->find('list', ['keyField' => 'key', 'valueField' => 'value'])
-                ->where(['Settings.plugin' => $pluginName, 'scope' => $scope])
-                ->all()
-                ->toArray();
-            $settings->apply($values);
-        } catch (\Exception $ex) {
-            $this->Flash->error($ex->getMessage());
-        }
+        $values = $this->Settings->find('list', ['keyField' => 'key', 'valueField' => 'value'])
+            ->where(['Settings.plugin' => $pluginName, 'scope' => $scope])
+            ->all()
+            ->toArray();
+        $settings->apply($values);
 
         $form = new SettingsForm($settings);
         if ($this->request->is('post')) {

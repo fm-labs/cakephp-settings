@@ -8,7 +8,7 @@ $pluginName = $this->get('pluginName');
 $this->extend('base');
 
 $this->Breadcrumbs->add(__d('settings', 'Settings'), ['action' => 'index']);
-$this->Breadcrumbs->add($scope, ['action' => 'index', $scope]);
+//$this->Breadcrumbs->add($scope, ['action' => 'index', $scope]);
 
 if ($pluginName) {
     $this->Breadcrumbs->add(

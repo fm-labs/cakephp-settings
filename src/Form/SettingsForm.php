@@ -243,7 +243,7 @@ class SettingsForm extends Form
         return $this->getSettingsManager()->getValue($key);
     }
 
-    public function execute(array $data): bool
+    public function execute(array $data, $options = []): bool
     {
         $values = [];
         foreach ($data as $field => $val) {

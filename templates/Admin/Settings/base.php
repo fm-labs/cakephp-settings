@@ -18,25 +18,36 @@ $this->Toolbar->addLink(
 );
 
 ?>
-<div class="index">
-    <div class="grid">
-        <div class="col col-md-3 col-sm-3 hidden-xs">
-            <h3><?= __('Settings'); ?></h3>
-            <ul class="nav nav-pills nav-stacked">
-                <li><?= $this->Html->link(
-                    __('Application'),
-                    ['_name' => 'admin:settings:manage', 'scope' => $scope, 'pluginName' => 'App']
-                ); ?></li>
+<div class="index container-fluid">
+    <div class="row">
+        <div class="col col-sm-3 col-md-3 col-lg-2">
+            <nav class="nav flex-column">
+                <div class="nav-item"><?= $this->Html->link(
+                        __('Application'),
+                        ['_name' => 'admin:settings:manage', 'scope' => $scope, 'pluginName' => 'App'],
+                        ['class' => 'nav-link py-1']
+                    ); ?></div>
                 <?php foreach (\Cake\Core\Plugin::loaded() as $_pluginName) : ?>
-                    <li class="<?= $plugin == $_pluginName ? 'active' : ''; ?>"><?= $this->Html->link(
-                        $_pluginName,
-                        ['_name' => 'admin:settings:manage', 'scope' => $scope, 'pluginName' => $_pluginName],
-                        ['class' => '']
-                    ); ?></li>
+                    <?php
+                    $options = [];
+                    $linkClass = 'nav-link py-1';
+
+                    $active = $plugin == $_pluginName;
+                    if ($active) {
+                        $linkClass .= ' active fw-bold';
+                        $options['aria-current'] = 'page';
+                    }
+                    $options['class'] = $linkClass;
+                    ?>
+                    <li class="nav-item"><?= $this->Html->link(
+                            $_pluginName,
+                            ['_name' => 'admin:settings:manage', 'scope' => $scope, 'pluginName' => $_pluginName],
+                            $options
+                        ); ?></li>
                 <?php endforeach; ?>
-            </ul>
+            </nav>
         </div>
-        <div class="col col-md-9 col-sm-9 col-xs-12">
+        <div class="col col-xs-12 col-sm-9 col-md-9 col-lg-10">
             <?= $this->fetch('content'); ?>
         </div>
     </div>
