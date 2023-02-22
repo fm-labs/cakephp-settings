@@ -34,13 +34,13 @@ class Plugin extends BasePlugin
             ]);
         }
 
-        // register early on so that other plugin see that the 'settings' config engine is available
-//        try {
-//            $engine = new SettingsConfig(Configure::read('Settings.modelName'), 'plugin');
-//            Configure::config('settings', $engine);
-//        } catch (\Exception $ex) {
-//            debug($ex->getMessage());
-//        }
+        // Register config engine
+        try {
+            $engine = new SettingsConfig(Configure::read('Settings.modelName'), 'plugin');
+            Configure::config('settings', $engine);
+        } catch (\Exception $ex) {
+            debug($ex->getMessage());
+        }
     }
 
     /**

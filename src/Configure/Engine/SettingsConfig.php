@@ -30,7 +30,7 @@ class SettingsConfig implements ConfigEngineInterface
     /**
      * @var string File prefix.
      */
-    protected $_prefix = 'settings_';
+    protected $_prefix = 'settings/';
 
     /**
      * @var string Table column name where the setting scope is stored
@@ -101,7 +101,7 @@ class SettingsConfig implements ConfigEngineInterface
         $filename = $this->_getFilePath($key);
         $contents = '<?php' . "\n" . 'return ' . var_export($data, true) . ';' . "\n";
 
-        return file_put_contents($filename, $contents);
+        return file_put_contents($filename, $contents) > 0;
     }
 
     /**

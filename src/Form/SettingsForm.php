@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Settings\Form;
 
+use Cake\Core\Configure;
 use Cake\Form\Form;
 use Cake\Form\Schema;
 use Cake\Utility\Hash;
@@ -18,6 +19,7 @@ use Settings\Settings\SettingsManager;
  */
 class SettingsForm extends Form
 {
+
     /**
      * @var string Form field delimiter
      */
@@ -31,16 +33,22 @@ class SettingsForm extends Form
     /**
      * @var \Settings\Settings\SettingsManager
      */
-    protected $_settings;
+    protected ?SettingsManager $settings;
+
+    /**
+     * @var bool|mixed If True, the form input's default value will be read from app's current configuration.
+     */
+    protected bool $defaultFromGlobalConfig;
 
     /**
      * @param \Settings\Settings\SettingsManager|null $settings Settings manager instance
      */
-    public function __construct(?SettingsManager $settings = null)
+    public function __construct(?SettingsManager $settings = null, $defaultFromGlobalConfig = false)
     {
         parent::__construct(null);
 
-        $this->_settings = $settings;
+        $this->settings = $settings;
+        $this->defaultFromGlobalConfig = $defaultFromGlobalConfig;
     }
 
     /**
@@ -48,11 +56,11 @@ class SettingsForm extends Form
      */
     public function getSettingsManager(): SettingsManager
     {
-        if (!$this->_settings) {
-            $this->_settings = new SettingsManager();
+        if (!$this->settings) {
+            $this->settings = new SettingsManager();
         }
 
-        return $this->_settings;
+        return $this->settings;
     }
 
     /**
@@ -173,6 +181,9 @@ class SettingsForm extends Form
             $desc = $config['help'];
             unset($config['help']);
         }
+        if (!$config['default'] && $this->defaultFromGlobalConfig === true) {
+            $config['default'] = Configure::read($key);
+        }
 
         $defaultInput = [
             'type' => null,
@@ -228,7 +239,7 @@ class SettingsForm extends Form
             $input['type'] = 'select';
         }
         if (isset($input['options']) && is_callable($input['options'])) {
-            $input['options'] = call_user_func($input['options'], $this->_settings);
+            $input['options'] = call_user_func($input['options'], $this->settings);
         }
 
         return $input;

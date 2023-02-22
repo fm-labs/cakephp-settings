@@ -50,21 +50,22 @@ class SettingsController extends AppController
     public function index(string $scope = 'default', string $pluginName = 'App'): void
     {
         $settingsName = $pluginName ? $pluginName . '.settings' : 'settings';
-        $settings = new SettingsManager();
+        $settingsManager = $this->getSettingsManager();
         //$settings->autoload();
-        $settings->load($settingsName);
+        $settingsManager->load($settingsName);
+        //$settingsManager->apply($settingsManager->getCurrentConfig());
 
         try {
             $values = $this->Settings->find('list', ['keyField' => 'key', 'valueField' => 'value'])
                 ->where(['Settings.plugin' => $pluginName, 'scope' => $scope])
                 ->all()
                 ->toArray();
-            $settings->apply($values);
+            $settingsManager->apply($values);
         } catch (\Exception $ex) {
             $this->Flash->error($ex->getMessage());
         }
 
-        $form = new SettingsForm($settings);
+        $form = new SettingsForm($settingsManager, true);
         if ($this->request->is('post')) {
             if ($form->execute($this->request->getData())) {
                 if ($this->Settings->updateValues($scope, $pluginName, $form->getSettingsManager()->getCompiled())) {
@@ -77,7 +78,7 @@ class SettingsController extends AppController
                 $this->Flash->error(__('Form validation failed'));
             }
         }
-        $this->set(compact('pluginName', 'scope', 'settings', 'form'));
+        $this->set(compact('pluginName', 'scope', 'settingsManager', 'form'));
         $this->render('form');
     }
 

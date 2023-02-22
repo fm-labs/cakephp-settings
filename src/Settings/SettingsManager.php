@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Settings\Settings;
 
+use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Utility\Hash;
 use Settings\Settings\SettingsSchema;
@@ -152,6 +153,22 @@ class SettingsManager
         }
 
         return $this->_compiled = $compiled;
+    }
+
+    /**
+     * Get the key-value pairs from the current app configuration.
+     *
+     * @return array
+     */
+    public function getCurrentConfig() {
+        $values = [];
+        foreach (array_keys($this->getSchema()->getSettings()) as $settingKey) {
+            $value = Configure::read($settingKey);
+            if ($value) {
+                $values[$settingKey] = $value;
+            }
+        }
+        return $values;
     }
 
     /**

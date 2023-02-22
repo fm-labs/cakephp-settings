@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace Settings\Model\Table;
 
+use Cake\Core\Configure;
 use Cake\Log\Log;
 use Cake\ORM\Entity;
 use Cake\ORM\Table;
+use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
 use Settings\Configure\Engine\SettingsConfig;
 
@@ -106,11 +108,13 @@ class SettingsTable extends Table
             $entities[] = $_setting;
         }
 
-        if ($this->saveMany($entities)) {
-            return true;
+        if (!$this->saveMany($entities)) {
+            return false;
         }
 
-        return false;
+        # return Configure::dump(Inflector::underscore($plugin), 'settings', array_keys($values));
+        $settingsConfig = new SettingsConfig();
+        return $settingsConfig->dump(Inflector::underscore($plugin), $values);
     }
 
     /**
