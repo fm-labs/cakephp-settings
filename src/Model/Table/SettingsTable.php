@@ -113,8 +113,9 @@ class SettingsTable extends Table
         }
 
         # return Configure::dump(Inflector::underscore($plugin), 'settings', array_keys($values));
-        $settingsConfig = new SettingsConfig();
-        return $settingsConfig->dump(Inflector::underscore($plugin), $values);
+        # $settingsConfig = new SettingsConfig();
+        # return $settingsConfig->dump(Inflector::underscore($plugin), $values);
+        return true;
     }
 
     /**
