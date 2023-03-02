@@ -69,13 +69,13 @@ class SettingsController extends AppController
         if ($this->request->is('post')) {
             if ($form->execute($this->request->getData())) {
                 if ($this->Settings->updateValues($scope, $pluginName, $form->getSettingsManager()->getCompiled())) {
-                    $this->Flash->success(__('Settings updated'));
+                    $this->Flash->success(__d('settings', 'Settings updated'));
                     $this->redirect(['_name' => 'admin:settings:manage', 'scope' => $scope, 'pluginName' => $pluginName]);
                 } else {
-                    $this->Flash->error(__('An error occured'));
+                    $this->Flash->error(__d('settings', 'An error occured'));
                 }
             } else {
-                $this->Flash->error(__('Form validation failed'));
+                $this->Flash->error(__d('settings', 'Form validation failed'));
             }
         }
         $this->set(compact('pluginName', 'scope', 'settingsManager', 'form'));
@@ -87,7 +87,7 @@ class SettingsController extends AppController
      */
     public function backup(): void
     {
-        $this->Flash->warning(__('Not implemented yet'));
+        $this->Flash->warning(__d('settings', 'Not implemented yet'));
         $this->redirect(['action' => 'index']);
     }
 
@@ -96,7 +96,7 @@ class SettingsController extends AppController
      */
     public function restore(): void
     {
-        $this->Flash->warning(__('Not implemented yet'));
+        $this->Flash->warning(__d('settings', 'Not implemented yet'));
         $this->redirect(['action' => 'index']);
     }
 }

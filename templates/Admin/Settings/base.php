@@ -23,7 +23,7 @@ $this->Toolbar->addLink(
         <div class="col col-sm-3 col-md-3 col-lg-2">
             <nav class="nav flex-column">
                 <div class="nav-item"><?= $this->Html->link(
-                        __('Application'),
+                        __d('settings', 'Application'),
                         ['_name' => 'admin:settings:manage', 'scope' => $scope, 'pluginName' => 'App'],
                         ['class' => 'nav-link py-1']
                     ); ?></div>

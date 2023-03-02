@@ -35,7 +35,7 @@ class SettingsSchema
      */
     public function __construct(array $groups = [], array $settings = [])
     {
-        $this->addGroup(static::DEFAULT_GROUP, ['label' => __('General')]);
+        $this->addGroup(static::DEFAULT_GROUP, ['label' => __d('settings', 'General')]);
         $this->addGroup($groups);
         $this->add($settings);
     }

@@ -23,7 +23,7 @@ if ($pluginName) {
 //});
 $schema = $form->getSettingsManager()->getSchema();
 if (empty($schema->getSettings())) {
-    echo __('No settings found for {0}', $pluginName);
+    echo __d('settings', 'No settings found for {0}', $pluginName);
     return false;
 }
 ?>
