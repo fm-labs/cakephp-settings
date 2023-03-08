@@ -11,6 +11,16 @@ use Settings\Configure\Engine\SettingsConfig;
 class Plugin extends BasePlugin
 {
     /**
+     * @var bool
+     */
+    public $routesEnabled = false;
+
+    /**
+     * @var bool
+     */
+    public $bootstrapEnabled = true;
+
+    /**
      * @inheritDoc
      */
     public function initialize(): void
