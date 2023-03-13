@@ -1,0 +1,105 @@
+# LANGUAGE translation of CakePHP Application
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2023-03-13 00:11+0000\n"
+"PO-Revision-Date: 2023-03-13 01:50+0100\n"
+"Last-Translator: \n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.2.2\n"
+
+#: mnt/DATA/workspaces/php/cakephp-settings/src/Controller/Admin/SettingsController.php:72
+msgid "Settings updated"
+msgstr "Einstellungen aktualisiert"
+
+#: mnt/DATA/workspaces/php/cakephp-settings/src/Controller/Admin/SettingsController.php:75
+msgid "An error occured"
+msgstr "Ein Fehler ist aufgetreten"
+
+#: mnt/DATA/workspaces/php/cakephp-settings/src/Controller/Admin/SettingsController.php:78
+msgid "Form validation failed"
+msgstr "Validierung ist fehlgeschlagen"
+
+#: mnt/DATA/workspaces/php/cakephp-settings/src/Controller/Admin/SettingsController.php:90
+#: mnt/DATA/workspaces/php/cakephp-settings/src/Controller/Admin/SettingsController.php:99
+msgid "Not implemented yet"
+msgstr "Noch nicht implementiert"
+
+#: mnt/DATA/workspaces/php/cakephp-settings/src/Settings/SettingsSchema.php:38
+msgid "General"
+msgstr "Allgemein"
+
+#: mnt/DATA/workspaces/php/cakephp-settings/templates/Admin/Settings/base.php:10
+msgid "Backup"
+msgstr "Sichern"
+
+#: mnt/DATA/workspaces/php/cakephp-settings/templates/Admin/Settings/base.php:15
+msgid "Restore"
+msgstr "Wiederherstellen"
+
+#: mnt/DATA/workspaces/php/cakephp-settings/templates/Admin/Settings/base.php:26
+msgid "Application"
+msgstr ""
+
+#: mnt/DATA/workspaces/php/cakephp-settings/templates/Admin/Settings/form.php:10
+#: mnt/DATA/workspaces/php/cakephp-settings/templates/Admin/SettingsDb/add.php:1
+#: mnt/DATA/workspaces/php/cakephp-settings/templates/Admin/SettingsDb/add.php:3
+#: mnt/DATA/workspaces/php/cakephp-settings/templates/Admin/SettingsDb/edit.php:1
+#: mnt/DATA/workspaces/php/cakephp-settings/templates/Admin/SettingsDb/edit.php:3
+#: mnt/DATA/workspaces/php/cakephp-settings/templates/Admin/SettingsDb/form.php:1
+#: mnt/DATA/workspaces/php/cakephp-settings/templates/Admin/SettingsDb/form.php:3
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: mnt/DATA/workspaces/php/cakephp-settings/templates/Admin/Settings/form.php:26
+msgid "No settings found for {0}"
+msgstr "Keine Einstellungen gefunden für {0}"
+
+#: mnt/DATA/workspaces/php/cakephp-settings/templates/Admin/Settings/form.php:38
+#: mnt/DATA/workspaces/php/cakephp-settings/templates/Admin/SettingsDb/form.php:19
+msgid "Save"
+msgstr "Speichern"
+
+#: mnt/DATA/workspaces/php/cakephp-settings/templates/Admin/SettingsDb/add.php:2
+msgid "New {0}"
+msgstr "Neue {0}"
+
+#: mnt/DATA/workspaces/php/cakephp-settings/templates/Admin/SettingsDb/add.php:2
+#: mnt/DATA/workspaces/php/cakephp-settings/templates/Admin/SettingsDb/add.php:4
+#: mnt/DATA/workspaces/php/cakephp-settings/templates/Admin/SettingsDb/edit.php:2
+#: mnt/DATA/workspaces/php/cakephp-settings/templates/Admin/SettingsDb/edit.php:4
+msgid "Setting"
+msgstr "Einstellung"
+
+#: mnt/DATA/workspaces/php/cakephp-settings/templates/Admin/SettingsDb/add.php:4
+msgid "Add {0}"
+msgstr "{0} hinzufügen"
+
+#: mnt/DATA/workspaces/php/cakephp-settings/templates/Admin/SettingsDb/add.php:12
+#: mnt/DATA/workspaces/php/cakephp-settings/templates/Admin/SettingsDb/edit.php:12
+msgid "Submit"
+msgstr "Absenden"
+
+#: mnt/DATA/workspaces/php/cakephp-settings/templates/Admin/SettingsDb/edit.php:2
+#: mnt/DATA/workspaces/php/cakephp-settings/templates/Admin/SettingsDb/edit.php:4
+msgid "Edit {0}"
+msgstr "{0} bearbeiten"
+
+#: mnt/DATA/workspaces/php/cakephp-settings/templates/Admin/SettingsDb/form.php:3
+msgid "Dump {0}"
+msgstr "{0} speichern"
+
+#: mnt/DATA/workspaces/php/cakephp-settings/templates/Admin/SettingsDb/index.php:5
+msgid "Manage settings"
+msgstr "Einstellungen verwalten"
+
+#: mnt/DATA/workspaces/php/cakephp-settings/templates/Admin/SettingsDb/index.php:16
+msgid "{0} settings"
+msgstr "{0} Einstellungen"
