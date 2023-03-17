@@ -14,7 +14,7 @@ class Initial extends AbstractMigration
      * https://book.cakephp.org/phinx/0/en/migrations.html#the-up-method
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         $this->table('settings')
             ->addColumn('id', 'integer', [
@@ -25,13 +25,13 @@ class Initial extends AbstractMigration
                 'signed' => false,
             ])
             ->addPrimaryKey(['id'])
-            ->addColumn('plugin', 'string', [
-                'default' => null,
+            ->addColumn('scope', 'string', [
+                'default' => '',
                 'limit' => 255,
                 'null' => false,
             ])
-            ->addColumn('scope', 'string', [
-                'default' => null,
+            ->addColumn('plugin', 'string', [
+                'default' => '',
                 'limit' => 255,
                 'null' => false,
             ])
@@ -45,28 +45,10 @@ class Initial extends AbstractMigration
                 'limit' => null,
                 'null' => true,
             ])
-            ->addColumn('locked', 'boolean', [
-                'default' => false,
-                'limit' => null,
-                'null' => false,
-            ])
             ->addIndex(
                 [
-                    'plugin',
                     'scope',
                     'key',
-                ],
-                ['unique' => true]
-            )
-            ->addIndex(
-                [
-                    'plugin',
-                ]
-            )
-            ->addIndex(
-                [
-                    'plugin',
-                    'scope',
                 ]
             )
             ->create();
@@ -79,7 +61,7 @@ class Initial extends AbstractMigration
      * https://book.cakephp.org/phinx/0/en/migrations.html#the-down-method
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         $this->table('settings')->drop()->save();
     }
