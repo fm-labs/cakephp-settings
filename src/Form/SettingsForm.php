@@ -172,7 +172,7 @@ class SettingsForm extends Form
             unset($config['label']);
         }
 
-        $desc = null;
+        $desc = "";
         if (isset($config['desc'])) {
             $desc = $config['desc'];
             unset($config['desc']);
@@ -190,7 +190,7 @@ class SettingsForm extends Form
             'label' => $label,
             'default' => $config['default'],
             'value' => $this->value($key),
-            'help' => $desc,
+            'help' => nl2br($desc),
             'required' => (bool)$config['required'],
         ];
         $input = array_merge($defaultInput, $input);
