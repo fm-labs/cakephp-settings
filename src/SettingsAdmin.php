@@ -10,7 +10,7 @@ use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\RouteBuilder;
 use Cupcake\Menu\MenuItemCollection;
 
-class Admin extends BaseAdminPlugin implements EventListenerInterface
+class SettingsAdmin extends BaseAdminPlugin implements EventListenerInterface
 {
     /**
      * @inheritDoc
@@ -25,7 +25,7 @@ class Admin extends BaseAdminPlugin implements EventListenerInterface
         $routes->connect(
             '/manage/{scope}/{pluginName}',
             ['controller' => 'Settings', 'action' => 'index'],
-            ['_name' => 'manage', 'pass' => ['scope', 'pluginName']]
+            ['_name' => 'manage', 'pass' => ['scope', 'pluginName'], 'pluginName' => '.*']
         );
         $routes->fallbacks(DashedRoute::class);
     }
