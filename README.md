@@ -9,7 +9,10 @@ You can install this plugin into your CakePHP application using [composer](http:
 The recommended way to install composer packages is:
 
 ```shell
-$ composer require fm-labs/cakephp-settings
+$ composer require fm-labs/cakephp-settings:^5
+
+# For CakePHP 4.x
+$ composer require fm-labs/cakephp-settings:^4
 ```
 
 ### Run migrations
@@ -99,7 +102,7 @@ return [
 ];
 
 
-``` 
+```
 
 
 ## Events
@@ -114,7 +117,7 @@ The `Settings.build` event will be triggered, when the global settings schema ge
     {
         return [
             'Settings.build' => 'buildSettings',
-        ];       
+        ];
     }
 
     /**

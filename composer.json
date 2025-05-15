@@ -3,8 +3,8 @@
     "description": "Settings plugin for CakePHP",
     "type": "cakephp-plugin",
     "require": {
-        "php": ">=8.0",
-        "cakephp/cakephp": "^4.0"
+        "php": ">=8.2",
+        "cakephp/cakephp": "^5.0"
     },
     "require-dev": {
         "phpunit/phpunit": "*"
