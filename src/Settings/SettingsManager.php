@@ -113,9 +113,9 @@ class SettingsManager
      * Get value
      *
      * @param string $key Setting key
-     * @return null
+     * @return string|null
      */
-    public function getValue(string $key): null
+    public function getValue(string $key): ?string
     {
         return $this->_values[$key] ?? null;
     }

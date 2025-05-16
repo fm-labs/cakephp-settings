@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Settings\Controller\Admin;
 
+use Exception;
 use Settings\Form\SettingsForm;
 use Settings\Settings\SettingsManager;
 
@@ -19,21 +20,21 @@ class SettingsController extends AppController
     public ?string $modelClass = null;
 
     /**
-     * @var string[]
+     * @var array<string>
      */
-    public $actions = [];
+    public array $actions = [];
 
     /**
      * @var \Settings\Settings\SettingsManager
      */
-    protected $_settingsManager;
+    protected ?SettingsManager $_settingsManager = null;
 
     /**
      * @return \Settings\Settings\SettingsManager
      */
     public function getSettingsManager()
     {
-        if (!$this->_settingsManager) {
+        if ($this->_settingsManager === null) {
             $manager = new SettingsManager();
             //$this->getEventManager()->dispatch(new Event('Settings.build', null, ['manager' => $manager]));
             $this->_settingsManager = $manager;
@@ -56,12 +57,12 @@ class SettingsController extends AppController
         //$settingsManager->apply($settingsManager->getCurrentConfig());
 
         try {
-            $values = $this->Settings->find('list', ['keyField' => 'key', 'valueField' => 'value'])
+            $values = $this->Settings->find(type: 'list', keyField: 'key', valueField: 'value')
                 ->where(['Settings.plugin' => $pluginName, 'scope' => $scope])
                 ->all()
                 ->toArray();
             $settingsManager->apply($values);
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             $this->Flash->error($ex->getMessage());
         }
 
@@ -70,7 +71,10 @@ class SettingsController extends AppController
             if ($form->execute($this->request->getData())) {
                 if ($this->Settings->updateValues($scope, $pluginName, $form->getSettingsManager()->getCompiled())) {
                     $this->Flash->success(__d('settings', 'Settings updated'));
-                    $this->redirect(['_name' => 'admin:settings:manage', 'scope' => $scope, 'pluginName' => $pluginName]);
+                    $this->redirect([
+                        '_name' => 'admin:settings:manage',
+                        'scope' => $scope,
+                        'pluginName' => $pluginName]);
                 } else {
                     $this->Flash->error(__d('settings', 'An error occured'));
                 }
