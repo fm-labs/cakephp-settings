@@ -3,30 +3,35 @@ declare(strict_types=1);
 
 namespace Settings;
 
+use Admin\Admin;
+use Cake\Cache\Cache;
 use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
+use Cake\Core\Plugin;
 use Cake\Core\PluginApplicationInterface;
+use Cake\Log\Log;
+use Exception;
 use Settings\Configure\Engine\SettingsConfig;
 
 class SettingsPlugin extends BasePlugin
 {
-    /**
-     * @var bool
-     */
-    public $routesEnabled = false;
-
-    /**
-     * @var bool
-     */
-    public $bootstrapEnabled = true;
+    //    /**
+    //     * @var bool
+    //     */
+    //    public $routesEnabled = false;
+    //
+    //    /**
+    //     * @var bool
+    //     */
+    //    public $bootstrapEnabled = true;
 
     /**
      * @inheritDoc
      */
     public function initialize(): void
     {
-        if (!\Cake\Cache\Cache::getConfig('settings')) {
-            \Cake\Cache\Cache::setConfig('settings', [
+        if (!Cache::getConfig('settings')) {
+            Cache::setConfig('settings', [
                 'className' => 'File',
                 'duration' => Configure::read('debug') ? '+5 minutes' : '+ 999 days',
                 'path' => CACHE . 'settings' . DS,
@@ -34,8 +39,8 @@ class SettingsPlugin extends BasePlugin
             ]);
         }
 
-        if (!\Cake\Log\Log::getConfig('settings')) {
-            \Cake\Log\Log::setConfig('settings', [
+        if (!Log::getConfig('settings')) {
+            Log::setConfig('settings', [
                 'className' => 'Cake\Log\Engine\FileLog',
                 'path' => LOGS,
                 'file' => 'settings',
@@ -48,7 +53,7 @@ class SettingsPlugin extends BasePlugin
         try {
             $engine = new SettingsConfig(Configure::read('Settings.modelName'), 'plugin');
             Configure::config('settings', $engine);
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             debug($ex->getMessage());
         }
     }
@@ -58,8 +63,8 @@ class SettingsPlugin extends BasePlugin
      */
     public function bootstrap(PluginApplicationInterface $app): void
     {
-        if (\Cake\Core\Plugin::isLoaded('Admin')) {
-            \Admin\Admin::addPlugin(new \Settings\SettingsAdmin());
+        if (Plugin::isLoaded('Admin')) {
+            Admin::addPlugin(new SettingsAdmin());
         }
     }
 }

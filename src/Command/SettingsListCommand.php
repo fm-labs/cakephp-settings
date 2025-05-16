@@ -18,7 +18,7 @@ class SettingsListCommand extends Command
     /**
      * @var string
      */
-    public $modelClass = 'Settings.Settings';
+    public ?string $modelClass = 'Settings.Settings';
 
     /**
      * @return string
@@ -64,9 +64,9 @@ class SettingsListCommand extends Command
      *
      * @param \Cake\Console\Arguments $args The command arguments.
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @return null|void|int The exit code or null for success
+     * @return int|void The exit code or null for success
      */
-    public function execute(Arguments $args, ConsoleIo $io)
+    public function execute(Arguments $args, ConsoleIo $io): ?int
     {
         $query = $this->Settings->find();
         $conditions = [];
@@ -84,7 +84,7 @@ class SettingsListCommand extends Command
         $data = [
             ['Scope', 'Plugin', 'Key', 'Value', 'Locked'],
         ];
-        $settings->each(function ($setting) use (&$data) {
+        $settings->each(function ($setting) use (&$data): void {
             $value = $setting->value ?? '<null>';
             $data[] = [$setting->scope, $setting->plugin, $setting->key, $value, (string)intval($setting->locked)];
         });

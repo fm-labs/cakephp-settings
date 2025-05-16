@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace Settings\Model\Table;
 
-use Cake\Core\Configure;
+use ArrayObject;
+use Cake\Event\EventInterface;
 use Cake\Log\Log;
 use Cake\ORM\Entity;
 use Cake\ORM\Table;
-use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
 use Settings\Configure\Engine\SettingsConfig;
 
@@ -39,9 +39,9 @@ class SettingsTable extends Table
      * @param string $plugin Plugin name
      * @param string $key Setting key
      * @param string $value Setting value
-     * @return bool|\Cake\Datasource\EntityInterface|\Cake\ORM\Entity|mixed
+     * @return \Cake\Datasource\EntityInterface|\Cake\ORM\Entity|mixed|bool
      */
-    public function addValue(string $scope, string $plugin, string $key, $value)
+    public function addValue(string $scope, string $plugin, string $key, string $value): mixed
     {
         return $this->updateValue($scope, $plugin, $key, $value);
     }
@@ -53,9 +53,9 @@ class SettingsTable extends Table
      * @param string $plugin Plugin name
      * @param string $key Setting key
      * @param string $value Setting value
-     * @return bool|\Cake\Datasource\EntityInterface|\Cake\ORM\Entity|mixed
+     * @return \Cake\Datasource\EntityInterface|\Cake\ORM\Entity|mixed|bool
      */
-    public function updateValue(string $scope, string $plugin, string $key, $value)
+    public function updateValue(string $scope, string $plugin, string $key, string $value): mixed
     {
         $search = ['key' => $key, 'scope' => $scope, 'plugin' => $plugin];
         $setting = $this->findOrCreate($search);
@@ -81,7 +81,7 @@ class SettingsTable extends Table
      */
     public function updateValues(string $scope, string $plugin, array $values): bool
     {
-        $settingIds = $this->find('list', ['keyField' => 'key', 'valueField' => 'id'])
+        $settingIds = $this->find('list', keyField: 'key', valueField: 'id')
             ->where(['scope' => $scope, 'plugin' => $plugin])
             ->all()
             ->toArray();
@@ -124,7 +124,7 @@ class SettingsTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator): \Cake\Validation\Validator
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->add('id', 'valid', ['rule' => 'numeric'])
@@ -158,7 +158,7 @@ class SettingsTable extends Table
      * @param \ArrayObject $options Options
      * @return void
      */
-    public function afterSave(\Cake\Event\EventInterface $event, Entity $entity, \ArrayObject $options)
+    public function afterSave(EventInterface $event, Entity $entity, ArrayObject $options): void
     {
         $this->clearSettingsCache($entity);
     }
@@ -169,7 +169,7 @@ class SettingsTable extends Table
      * @param \ArrayObject $options Options
      * @return void
      */
-    public function afterSaveCommit(\Cake\Event\EventInterface $event, Entity $entity, \ArrayObject $options)
+    public function afterSaveCommit(EventInterface $event, Entity $entity, ArrayObject $options): void
     {
         $this->clearSettingsCache($entity);
     }
@@ -180,7 +180,7 @@ class SettingsTable extends Table
      * @param \ArrayObject $options Options
      * @return void
      */
-    public function afterDelete(\Cake\Event\EventInterface $event, Entity $entity, \ArrayObject $options)
+    public function afterDelete(EventInterface $event, Entity $entity, ArrayObject $options): void
     {
         $this->clearSettingsCache($entity);
     }

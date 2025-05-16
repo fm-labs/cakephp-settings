@@ -6,7 +6,7 @@ namespace Settings\Settings;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Utility\Hash;
-use Settings\Settings\SettingsSchema;
+use Exception;
 
 /**
  * Class SettingsManager
@@ -23,12 +23,12 @@ class SettingsManager
     /**
      * @var array
      */
-    protected $_values = [];
+    protected array $_values = [];
 
     /**
      * @var array
      */
-    protected $_compiled = [];
+    protected array $_compiled = [];
 
     /**
      * Constructor
@@ -55,7 +55,7 @@ class SettingsManager
      * @param string $file File name without file extension
      * @return void
      */
-    public function load($file = 'settings'): void
+    public function load(string $file = 'settings'): void
     {
         [$plugin, $file] = pluginSplit($file);
         $plugin = $plugin && strtolower($plugin) != 'app' ? $plugin : null;
@@ -96,15 +96,15 @@ class SettingsManager
         // load app settings
         try {
             $this->load('settings');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
         }
 
         // load plugin settings
-        foreach (\Cake\Core\Plugin::loaded() as $plugin) {
+        foreach (Plugin::loaded() as $plugin) {
             $path = sprintf('%s.%s', $plugin, 'settings');
             try {
                 $this->load($path);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
             }
         }
     }
@@ -115,7 +115,7 @@ class SettingsManager
      * @param string $key Setting key
      * @return null
      */
-    public function getValue($key)
+    public function getValue(string $key): null
     {
         return $this->_values[$key] ?? null;
     }
@@ -160,7 +160,8 @@ class SettingsManager
      *
      * @return array
      */
-    public function getCurrentConfig() {
+    public function getCurrentConfig(): array
+    {
         $values = [];
         foreach (array_keys($this->getSchema()->getSettings()) as $settingKey) {
             $value = Configure::read($settingKey);
@@ -168,6 +169,7 @@ class SettingsManager
                 $values[$settingKey] = $value;
             }
         }
+
         return $values;
     }
 

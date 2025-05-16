@@ -5,6 +5,7 @@ namespace Settings\View\Form;
 
 use Cake\Http\ServerRequest as Request;
 use Cake\View\Form\ContextInterface;
+use Settings\Form\SettingsForm;
 
 /**
  * Class SettingsFormContext
@@ -16,7 +17,7 @@ class SettingsFormContext implements ContextInterface
     /**
      * @var \Settings\Form\SettingsForm
      */
-    protected $_form;
+    protected SettingsForm $_form;
 
     /**
      * Constructor.
@@ -43,7 +44,7 @@ class SettingsFormContext implements ContextInterface
      *
      * @return array
      */
-    public function primaryKey()
+    public function primaryKey(): array
     {
         return [];
     }
@@ -55,7 +56,7 @@ class SettingsFormContext implements ContextInterface
      *   is needed for.
      * @return bool
      */
-    public function isPrimaryKey($field): bool
+    public function isPrimaryKey(string $field): bool
     {
         return false;
     }
@@ -85,7 +86,7 @@ class SettingsFormContext implements ContextInterface
      *   is needed for.
      * @return mixed
      */
-    public function val(string $field, array $options = [])
+    public function val(string $field, array $options = []): mixed
     {
         return $this->_form->value($field);
     }
@@ -98,7 +99,7 @@ class SettingsFormContext implements ContextInterface
      * @param string $field A dot separated path to check required-ness for.
      * @return bool
      */
-    public function isRequired($field): bool
+    public function isRequired(string $field): bool
     {
         return false;
     }
@@ -117,10 +118,10 @@ class SettingsFormContext implements ContextInterface
      * Get the field type for a given field name.
      *
      * @param string $field A dot separated path to get a schema type for.
-     * @return null|string An data type or null.
+     * @return string|null An data type or null.
      * @see \Cake\Database\Type
      */
-    public function type($field): ?string
+    public function type(string $field): ?string
     {
         return $this->_form->schema()->fieldType($field);
     }
@@ -131,7 +132,7 @@ class SettingsFormContext implements ContextInterface
      * @param string $field A dot separated path to get additional data on.
      * @return array An array of data describing the additional attributes on a field.
      */
-    public function attributes($field): array
+    public function attributes(string $field): array
     {
         return $this->_form->schema()->field($field);
     }
@@ -142,7 +143,7 @@ class SettingsFormContext implements ContextInterface
      * @param string $field A dot separated path to check errors on.
      * @return bool Returns true if the errors for the field are not empty.
      */
-    public function hasError($field): bool
+    public function hasError(string $field): bool
     {
         return false;
     }
@@ -154,7 +155,7 @@ class SettingsFormContext implements ContextInterface
      * @return array An array of errors, an empty array will be returned when the
      *    context has no errors.
      */
-    public function error($field): array
+    public function error(string $field): array
     {
         // TODO: Implement error() method.
         return [];
@@ -178,5 +179,6 @@ class SettingsFormContext implements ContextInterface
     public function getPrimaryKey(): array
     {
         // TODO: Implement getPrimaryKey() method.
+        return [];
     }
 }

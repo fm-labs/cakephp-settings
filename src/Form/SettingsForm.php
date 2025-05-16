@@ -6,7 +6,6 @@ namespace Settings\Form;
 use Cake\Core\Configure;
 use Cake\Form\Form;
 use Cake\Form\Schema;
-use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Cake\Utility\Text;
 use Cake\Validation\Validator;
@@ -19,7 +18,6 @@ use Settings\Settings\SettingsManager;
  */
 class SettingsForm extends Form
 {
-
     /**
      * @var string Form field delimiter
      */
@@ -36,7 +34,7 @@ class SettingsForm extends Form
     protected ?SettingsManager $settings;
 
     /**
-     * @var bool|mixed If True, the form input's default value will be read from app's current configuration.
+     * @var mixed|bool  If True, the form input's default value will be read from app's current configuration.
      */
     protected bool $defaultFromGlobalConfig;
 
@@ -79,7 +77,7 @@ class SettingsForm extends Form
     /**
      * Build form validator event hook.
      *
-     * @param Validator $validator
+     * @param \Cake\Validation\Validator $validator
      */
     public function validationDefault(Validator $validator): Validator
     {
@@ -125,6 +123,7 @@ class SettingsForm extends Form
 
     /**
      * Build form field name from setting key.
+     *
      * @param string $key
      * @return string
      */
@@ -172,7 +171,7 @@ class SettingsForm extends Form
             unset($config['label']);
         }
 
-        $desc = "";
+        $desc = '';
         if (isset($config['desc'])) {
             $desc = $config['desc'];
             unset($config['desc']);
@@ -204,7 +203,7 @@ class SettingsForm extends Form
      * @param array $config Input config
      * @return array Input schema
      */
-    protected function _buildInput(array $input, array $config = [])
+    protected function _buildInput(array $input, array $config = []): array
     {
         if (!$input['type']) {
             switch ($config['type']) {
@@ -249,7 +248,7 @@ class SettingsForm extends Form
      * @param string $key Setting key
      * @return mixed|null
      */
-    public function value(string $key)
+    public function value(string $key): mixed
     {
         return $this->getSettingsManager()->getValue($key);
     }

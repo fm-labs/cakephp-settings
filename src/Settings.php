@@ -3,10 +3,7 @@ declare(strict_types=1);
 
 namespace Settings;
 
-use Cake\Cache\Cache;
 use Cake\Core\Configure;
-use Cake\Core\PluginApplicationInterface;
-use Settings\Settings\SettingsSchema;
 
 class Settings
 {
@@ -86,7 +83,7 @@ class Settings
         return Configure::dump($name, 'settings', $keys);
     }
 
-    public static function clearCache(string $string, $plugin)
+    public static function clearCache(string $string, $plugin): void
     {
     }
 }

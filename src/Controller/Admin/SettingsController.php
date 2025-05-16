@@ -16,7 +16,7 @@ class SettingsController extends AppController
     /**
      * @var string
      */
-    public $modelClass = false;
+    public ?string $modelClass = null;
 
     /**
      * @var string[]

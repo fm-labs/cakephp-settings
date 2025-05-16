@@ -20,12 +20,12 @@ class SettingsSchema
     /**
      * @var array List of settings
      */
-    protected $_settings = [];
+    protected array $_settings = [];
 
     /**
      * @var array List of setting groups
      */
-    protected $_groups = [];
+    protected array $_groups = [];
 
     /**
      * SettingsSchema constructor.
@@ -41,11 +41,11 @@ class SettingsSchema
     }
 
     /**
-     * @param string|array $key Setting key or multiple keys
+     * @param array|string $key Setting key or multiple keys
      * @param array $config Setting schema config
      * @return $this
      */
-    public function add($key, array $config = [])
+    public function add(string|array $key, array $config = [])
     {
         if (is_array($key)) {
             foreach ($key as $_key => $_config) {
@@ -78,11 +78,11 @@ class SettingsSchema
     }
 
     /**
-     * @param string|array $name Settings group name or array of group configs
+     * @param array|string $name Settings group name or array of group configs
      * @param array $config Settings group config
      * @return $this
      */
-    public function addGroup($name, array $config = [])
+    public function addGroup(string|array $name, array $config = [])
     {
         if (is_array($name)) {
             foreach ($name as $_name => $_config) {

@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class InitialSettings extends AbstractMigration
+class InitialSettings extends BaseMigration
 {
-    public $autoId = false;
+    public bool $autoId = false;
 
     /**
      * Up Method.

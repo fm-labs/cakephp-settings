@@ -3,10 +3,6 @@ declare(strict_types=1);
 
 namespace Settings\Controller\Admin;
 
-use Cupcake\Cupcake;
-use Settings\Form\SettingsForm;
-use Settings\Settings\SettingsManager;
-
 class SettingsDbController extends AppController
 {
     public $actions = [
@@ -16,7 +12,6 @@ class SettingsDbController extends AppController
         'edit' => 'Admin.Edit',
         'delete' => 'Admin.Delete',
     ];
-
 
     /**
      * @return void

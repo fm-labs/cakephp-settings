@@ -18,7 +18,7 @@ class SettingsGetValueCommand extends Command
     /**
      * @var string
      */
-    public $modelClass = 'Settings.Settings';
+    public ?string $modelClass = 'Settings.Settings';
 
     /**
      * @return string
@@ -64,9 +64,9 @@ class SettingsGetValueCommand extends Command
      *
      * @param \Cake\Console\Arguments $args The command arguments.
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @return null|void|int The exit code or null for success
+     * @return void The exit code or null for success
      */
-    public function execute(Arguments $args, ConsoleIo $io)
+    public function execute(Arguments $args, ConsoleIo $io): void
     {
         $conditions = [];
         $conditions['Settings.scope'] = $args->getOption('scope');

@@ -73,7 +73,7 @@ class SettingsConfig implements ConfigEngineInterface
         if (!$settings) {
             try {
                 $Table = TableRegistry::getTableLocator()->get($this->_modelClass);
-                $query = $Table->find('list', ['keyField' => 'key', 'valueField' => 'value'])
+                $query = $Table->find('list', keyField: 'key', valueField: 'value')
                     ->where([$this->_scopeField => $scope]);
                 $settings = $query->toArray();
 

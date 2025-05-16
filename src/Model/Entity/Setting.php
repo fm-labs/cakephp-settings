@@ -23,7 +23,7 @@ class Setting extends Entity
      *
      * @var array
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         'id' => true,
         'scope' => true,
         'plugin' => true,
@@ -36,7 +36,7 @@ class Setting extends Entity
     /**
      * @var array
      */
-    protected $_virtual = [
+    protected array $_virtual = [
         'scoped_key',
     ];
 
@@ -49,9 +49,9 @@ class Setting extends Entity
     }
 
     /**
-     * @return null|mixed
+     * @return mixed|null
      */
-    protected function _getActual()
+    protected function _getActual(): mixed
     {
         return Configure::read($this->key);
     }

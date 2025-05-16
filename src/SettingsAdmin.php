@@ -20,12 +20,12 @@ class SettingsAdmin extends BaseAdminPlugin implements EventListenerInterface
         $routes->connect(
             '/',
             ['controller' => 'Settings', 'action' => 'index'],
-            ['_name' => 'index']
+            ['_name' => 'index'],
         );
         $routes->connect(
             '/manage/{scope}/{pluginName}',
             ['controller' => 'Settings', 'action' => 'index'],
-            ['_name' => 'manage', 'pass' => ['scope', 'pluginName'], 'pluginName' => '.*']
+            ['_name' => 'manage', 'pass' => ['scope', 'pluginName'], 'pluginName' => '.*'],
         );
         $routes->fallbacks(DashedRoute::class);
     }
