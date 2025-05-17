@@ -69,14 +69,19 @@ class SettingsController extends AppController
         $form = new SettingsForm($settingsManager, true);
         if ($this->request->is('post')) {
             if ($form->execute($this->request->getData())) {
-                if ($this->Settings->updateValues($scope, $pluginName, $form->getSettingsManager()->getCompiled())) {
-                    $this->Flash->success(__d('settings', 'Settings updated'));
-                    $this->redirect([
-                        '_name' => 'admin:settings:manage',
-                        'scope' => $scope,
-                        'pluginName' => $pluginName]);
-                } else {
-                    $this->Flash->error(__d('settings', 'An error occured'));
+                $compiled = $form->getSettingsManager()->getCompiled();
+                try {
+                    if ($this->Settings->updateValues($scope, $pluginName, $compiled)) {
+                        $this->Flash->success(__d('settings', 'Settings updated'));
+                        $this->redirect([
+                            '_name' => 'admin:settings:manage',
+                            'scope' => $scope,
+                            'pluginName' => $pluginName]);
+                    } else {
+                        $this->Flash->error(__d('settings', 'An error occured'));
+                    }
+                } catch (Exception $ex) {
+                    $this->Flash->error($ex->getMessage());
                 }
             } else {
                 $this->Flash->error(__d('settings', 'Form validation failed'));

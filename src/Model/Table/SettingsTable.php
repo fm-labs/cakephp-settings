@@ -86,31 +86,49 @@ class SettingsTable extends Table
             ->all()
             ->toArray();
 
-        $entities = [];
-        foreach ($values as $key => $value) {
-            $data = [];
-            $data['scope'] = $scope;
-            $data['plugin'] = $plugin;
-            $data['key'] = $key;
-            $data['value'] = $value;
-            $data['id'] = $settingIds[$key] ?? null;
+        // start a transaction
+        $this->getConnection()->begin();
 
-            /** @var \Settings\Model\Entity\Setting $_setting */
-            $_setting = $this->newEntity($data);
-            $_setting->id = $settingIds[$key] ?? null;
+        try {
+            $settings = [];
+            foreach ($values as $key => $value) {
+                $data = [];
+                if ($settingIds[$key] ?? null) {
+                    $data['id'] = $settingIds[$key];
+                }
 
-            if ($_setting->getErrors()) {
-                debug($_setting->getErrors());
-                Log::error("Setting with key $key has errors", ['settings']);
-                //return false;
+                $data['scope'] = $scope;
+                $data['plugin'] = $plugin;
+                $data['key'] = $key;
+                $data['value'] = $value;
+
+                /** @var \Settings\Model\Entity\Setting $_setting */
+                $_setting = $this->newEntity($data);
+
+                if ($_setting->getErrors()) {
+                    debug($_setting->getErrors());
+                    Log::error("Setting with key $key has errors", ['settings']);
+                    //return false;
+                }
+
+                if (!$this->save($_setting)) {
+                    debug($_setting->getErrors());
+                    Log::error("Setting with key $key failed to save", ['settings']);
+                }
+
+                //$entities[] = $_setting;
+                $settings[] = $data;
             }
 
-            $entities[] = $_setting;
+            $this->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->getConnection()->rollback();
         }
 
-        if (!$this->saveMany($entities)) {
-            return false;
-        }
+//        $entities = $this->newEntities($settings);
+//        if (!$this->saveMany($entities)) {
+//            return false;
+//        }
 
         # return Configure::dump(Inflector::underscore($plugin), 'settings', array_keys($values));
         # $settingsConfig = new SettingsConfig();
